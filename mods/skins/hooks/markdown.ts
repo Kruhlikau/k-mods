@@ -1,5 +1,5 @@
-// Finds the tables and fenced code in a reply so they can be drawn as cards; the rest
-// stays markdown.
+// Finds the tables, fenced code and (k-mods) headings in a reply so they can be drawn as
+// cards; the rest stays markdown.
 
 export type Align = 'left' | 'right' | 'center'
 
@@ -8,10 +8,36 @@ export type Table = { kind: 'table'; header: string[]; align: Align[]; rows: str
 // `raw` is the fence as written, for the surfaces that keep Claude Code's own drawing.
 export type Code = { kind: 'code'; lang: string; code: string; raw: string }
 
-export type Segment = { kind: 'text'; text: string } | Table | Code
+// k-mods: an ATX heading (`# Title`), drawn by the skin where the surface's markdown
+// draws every level as plain bold.
+export type Heading = { kind: 'heading'; level: number; text: string }
+
+// k-mods: a thematic break (`---`, `***`, `___`) on a line after a blank one; right under
+// text, `---` is a setext heading and stays text.
+export type Rule = { kind: 'rule' }
+
+export type Segment = { kind: 'text'; text: string } | Table | Code | Heading | Rule
+
+export type SplitOptions = {
+  // k-mods: false leaves tables and fences in the text (the `tables` setting off).
+  cards?: boolean
+  // k-mods: headings and thematic breaks become their own segments (the terminal; the
+  // desktop draws both).
+  headings?: boolean
+  // k-mods: fences in these languages stay in the text, for a mod further down the
+  // chain to draw (gfm-render's ```mermaid), instead of becoming a code card.
+  keepFences?: readonly string[]
+}
 
 const SEPARATOR = /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/
 const FENCE = /^\s*(```|~~~)\s*([\w+#.-]*)/
+
+// Up to three spaces, one to six #s, a space, the title; a closing run of #s is dropped.
+const HEADING = /^ {0,3}(#{1,6})[ \t]+(.*?)(?:[ \t]+#+)?[ \t]*$/
+const RULE = /^ {0,3}([-*_])(?:[ \t]*\1){2,}[ \t]*$/
+
+export const hasHeadingOrRule = (markdown: string): boolean =>
+  /^ {0,3}#{1,6}[ \t]+\S/m.test(markdown) || /^ {0,3}([-*_])(?:[ \t]*\1){2,}[ \t]*$/m.test(markdown)
 
 // Inline emphasis and code ticks read as noise in a padded cell.
 const clean = (cell: string): string =>
@@ -36,8 +62,9 @@ const alignOf = (cell: string): Align => {
 const fit = (cells: string[], width: number): string[] =>
   Array.from({ length: width }, (_, i) => cells[i] ?? '')
 
-export function splitReply(markdown: string): Segment[] {
+export function splitReply(markdown: string, options: SplitOptions = {}): Segment[] {
   const lines = markdown.split('\n')
+  const keep = new Set(options.keepFences ?? [])
   const segments: Segment[] = []
   let text: string[] = []
   let inFence = false
@@ -60,11 +87,19 @@ export function splitReply(markdown: string): Segment[] {
     if (fence !== null && !inFence) {
       const close = lines.findIndex((other, j) => j > i && FENCE.test(other) && other.trim().replace(/[`~]/g, '') === '')
 
+      const lang = (fence[2] ?? '').toLowerCase()
+
+      if (close !== -1 && (keep.has(lang) || options.cards === false)) {
+        text.push(...lines.slice(i, close + 1))
+        i = close
+        continue
+      }
+
       if (close !== -1) {
         flush()
         segments.push({
           kind: 'code',
-          lang: (fence[2] ?? '').toLowerCase(),
+          lang,
           code: lines.slice(i + 1, close).join('\n'),
           raw: lines.slice(i, close + 1).join('\n'),
         })
@@ -77,8 +112,25 @@ export function splitReply(markdown: string): Segment[] {
       inFence = false
     }
 
+    const heading = options.headings === true && !inFence ? HEADING.exec(line) : null
+
+    if (heading !== null && (heading[2] ?? '').trim() !== '') {
+      flush()
+      segments.push({ kind: 'heading', level: (heading[1] ?? '#').length, text: (heading[2] ?? '').replace(/\*\*|__|`/g, '').trim() })
+      continue
+    }
+
+    const afterBlank = (text.at(-1) ?? '').trim() === ''
+
+    if (options.headings === true && !inFence && afterBlank && RULE.test(line)) {
+      flush()
+      segments.push({ kind: 'rule' })
+      continue
+    }
+
     const header = cellsOf(line)
     const isTable =
+      options.cards !== false &&
       !inFence &&
       line.includes('|') &&
       SEPARATOR.test(next) &&

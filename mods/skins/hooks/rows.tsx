@@ -276,10 +276,17 @@ const JUSTIFY = { left: 'flex-start', right: 'flex-end', center: 'center' } as c
 // app reports the window's width, wider than the transcript column a reply sits in.
 const NATURAL_SHARE = 0.55
 
+// k-mods: the room a card leaves above and below it.
+type Margin = { marginTop: number; marginBottom: number }
+
+const SPACED: Margin = { marginTop: 1, marginBottom: 1 }
+
 // A grid of cells, so columns line up in the terminal's monospace and in the desktop
 // app's proportional font alike. `control`, such as a Copy button, sits on the frame's
 // top border at the right, as ╭──── Copy ─╮.
-export function tableRows(look: Look, table: Table, maxWidth: number, control?: ReturnType<Ui['Button']>) {
+//
+// k-mods: `margin` is the room above and below the frame, one row each by default.
+export function tableRows(look: Look, table: Table, maxWidth: number, control?: ReturnType<Ui['Button']>, margin: Margin = SPACED) {
   const { Box, Text } = look.ui
   const { palette } = look.skin
   const widths = columnWidths(table, maxWidth - 4, CELL_PAD * 2)
@@ -309,7 +316,7 @@ export function tableRows(look: Look, table: Table, maxWidth: number, control?: 
   return (
     <Box
       flexDirection="column"
-      marginY={1}
+      {...margin}
       borderStyle="round"
       borderColor={palette.muted}
       {...(isFluid ? { width: '100%' } : { alignSelf: 'flex-start' as const })}
@@ -382,45 +389,124 @@ export function copyRow(look: Look, key: string, text: string) {
   )
 }
 
-export function replyRows(look: Look, segments: readonly Segment[], maxWidth: number, Svg?: SvgElement) {
-  const { Box, Markdown } = look.ui
+// k-mods: a heading in the skin's accent. The terminal can't draw a bigger letter, so
+// each level keeps the #s it was written with, muted, before its bold title: the count
+// tells the levels apart even on a skin with no colour (noir).
+export function headingRow(look: Look, level: number, text: string, isFirst: boolean) {
+  const { Box, Text } = look.ui
+  const { palette } = look.skin
 
   return (
-    <Box flexDirection="column">
-      {segments.map((segment, i) => {
-        if (segment.kind === 'text') {
-          return <Markdown text={segment.text} />
-        }
+    <Box marginTop={isFirst ? 0 : 1}>
+      <Text bold>
+        <Text color={palette.muted}>{`${'#'.repeat(level)} `}</Text>
+        <Text color={level <= 3 ? palette.user : palette.fg}>{text}</Text>
+      </Text>
+    </Box>
+  )
+}
 
-        if (segment.kind === 'code') {
-          // k-mods: a rounded card in the terminal too, matching the table and the
-          // desktop's code card, instead of plain markdown with Copy floating under it.
-          // Copy sits inside the card at the bottom right, not on the top border: a
-          // position="absolute" overlay (as the table and desktop cards use) does not
-          // draw in the terminal, and the border can't be dragged into a selection
-          // without picking up its │ characters, so a button is the only way to copy.
-          return Svg === undefined ? (
-            <Box flexDirection="column" marginY={1} borderStyle="round" borderColor={look.skin.palette.muted} paddingX={1}>
-              <Markdown text={segment.raw} />
-              {look.copy === undefined ? (
-                ''
-              ) : (
-                <Box flexDirection="row" justifyContent="flex-end">
-                  {copyButton(look, `copy-${i}`, segment.code)}
-                </Box>
-              )}
-            </Box>
+// k-mods: a thematic break (`---`), which the terminal's markdown leaves as written.
+export function ruleRow(look: Look, width: number, isFirst: boolean) {
+  const { Box, Text } = look.ui
+
+  return (
+    <Box marginTop={isFirst ? 0 : 1}>
+      <Text color={look.skin.palette.muted}>{'─'.repeat(Math.max(1, width))}</Text>
+    </Box>
+  )
+}
+
+// k-mods: `drawn` holds the text segments as the hooks below skins drew them (gfm-render's
+// alerts and diagrams, or Claude Code's markdown), by index; a segment missing from it
+// is drawn here as markdown. `bullet` is set in the terminal, where a reply opens with
+// ⏺ and its text sits in the column after it: a reply that opens with text has the
+// hooks below draw that text with its bullet (drawn[0], handed down as the first of
+// the reply), and the rest lines up under it; one that opens with a card or a heading
+// gets the bullet here. A block below draws with a row of room above it, so the cards
+// and headings here keep room above only, or a card before text would leave two rows.
+export function replyRows(
+  look: Look,
+  segments: readonly Segment[],
+  maxWidth: number,
+  Svg?: SvgElement,
+  drawn?: ReadonlyMap<number, ReturnType<Ui['Text']>>,
+  bullet?: boolean,
+) {
+  const { Box, Markdown, Text } = look.ui
+  const gutter = bullet === undefined ? 0 : 2
+  const width = maxWidth - gutter
+  const margin = (i: number): Margin => (bullet === undefined ? SPACED : { marginTop: i === 0 ? 0 : 1, marginBottom: 0 })
+
+  const rows = segments.map((segment, i) => {
+    if (segment.kind === 'text') {
+      return drawn?.get(i) ?? <Markdown text={segment.text} />
+    }
+
+    if (segment.kind === 'heading') {
+      return headingRow(look, segment.level, segment.text, i === 0)
+    }
+
+    if (segment.kind === 'rule') {
+      return ruleRow(look, width, i === 0)
+    }
+
+    if (segment.kind === 'code') {
+      // k-mods: a rounded card in the terminal too, matching the table and the
+      // desktop's code card, instead of plain markdown with Copy floating under it.
+      // Copy sits inside the card at the bottom right, not on the top border: a
+      // position="absolute" overlay (as the table and desktop cards use) does not
+      // draw in the terminal, and the border can't be dragged into a selection
+      // without picking up its │ characters, so a button is the only way to copy.
+      return Svg === undefined ? (
+        <Box flexDirection="column" {...margin(i)} borderStyle="round" borderColor={look.skin.palette.muted} paddingX={1}>
+          <Markdown text={segment.raw} />
+          {look.copy === undefined ? (
+            ''
           ) : (
-            codeCard(look, segment.lang, segment.code, Svg, maxWidth, `copy-${i}`)
-          )
-        }
+            <Box flexDirection="row" justifyContent="flex-end">
+              {copyButton(look, `copy-${i}`, segment.code)}
+            </Box>
+          )}
+        </Box>
+      ) : (
+        codeCard(look, segment.lang, segment.code, Svg, width, `copy-${i}`)
+      )
+    }
 
-        return Svg === undefined ? (
-          tableRows(look, segment, maxWidth, copyButton(look, `copy-${i}`, tableMarkdown(segment)))
-        ) : (
-          tableCard(look, segment, Svg, maxWidth, `copy-${i}`)
-        )
-      })}
+    return Svg === undefined ? (
+      tableRows(look, segment, width, copyButton(look, `copy-${i}`, tableMarkdown(segment)), margin(i))
+    ) : (
+      tableCard(look, segment, Svg, width, `copy-${i}`)
+    )
+  })
+
+  const column = (children: typeof rows, extra: Record<string, number> = {}) => (
+    <Box flexDirection="column" flexGrow={1} flexShrink={1} {...extra}>
+      {children}
+    </Box>
+  )
+
+  if (bullet === undefined) {
+    return column(rows)
+  }
+
+  if (bullet && segments[0]?.kind === 'text' && drawn?.has(0) === true) {
+    return (
+      <Box flexDirection="column">
+        {rows[0]}
+        {column(rows.slice(1), { marginLeft: gutter })}
+      </Box>
+    )
+  }
+
+  // The row above it, as Claude Code leaves above each block it draws.
+  return (
+    <Box flexDirection="row" marginTop={1}>
+      <Box width={gutter} flexShrink={0}>
+        <Text>{bullet ? '⏺' : ' '}</Text>
+      </Box>
+      {column(rows)}
     </Box>
   )
 }

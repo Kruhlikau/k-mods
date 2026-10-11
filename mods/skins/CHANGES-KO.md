@@ -55,7 +55,41 @@
    자동으로 엔진에 넘겨, 두 mod가 같은 줄을 두 번 그리지 않게 합니다.
    `userConfig.status_lines`(`auto`/`skins`/`engine`, 기본 `auto`)로 사람이 직접 고를 수도
    있습니다. `hooks/command.ts`의 `statusLinesMode`, `hooks/register.tsx`의
-   `isStatusKoEnabled`를 보세요.
+   `enabledPluginNames`를 보세요.
+
+## k-mods 전용 추가: gfm-render와 공존, 터미널 헤딩 (0.1.0-ko.2)
+
+7. **답변 사이 글을 다음 mod에 넘김** (`hooks/register.tsx`의 `AssistantMessage` 훅, `hooks/rows.tsx`의
+   `replyRows`). 원본은 표·코드가 있는 답변을 통째로 직접 그리고, 그 사이 글도 `<Markdown>`으로
+   그렸습니다. 그래서 skins 뒤에 실행되는 mod(gfm-render의 경고문·체크리스트·Mermaid)는 그
+   답변을 아예 받지 못했습니다. 이제 표·코드 카드·헤딩만 skins가 그리고, 그 사이 글 덩어리는
+   하나씩 `next`로 넘겨 아래 mod(없으면 Claude Code)가 그린 결과를 끼워 넣습니다.
+   - gfm-render가 켜져 있으면(`enabledPlugins`에 `gfm-render@…`) ` ```mermaid ` 펜스를 코드 카드로
+     만들지 않고 글에 남겨 gfm-render가 그림으로 그리게 합니다. `--plugin-dir`로만 불러온
+     gfm-render는 설정에 없어 감지하지 못합니다.
+   - Claude Code가 도구 호출 사이 글을 요약한 블록(`isSummary`)은 건드리지 않습니다.
+   - 같은 이벤트의 사용자 mod끼리는 먼저 불러온 쪽이 바깥에서 먼저 실행됩니다(실제 세션에서
+     확인). gfm-render가 바깥이면 경고문·Mermaid가 있는 답변은 gfm-render가 통째로 그려 그
+     답변의 표·헤딩은 skins 모양이 아닙니다. 그 밖의 답변은 gfm-render가 넘겨 주므로 둘 다
+     적용됩니다.
+
+8. **터미널 답변의 `⏺`와 들여쓰기 복원** (`replyRows`). 원본은 답변을 직접 그리면 Claude Code가
+   그리던 첫 줄 `⏺`와 2칸 들여쓰기가 사라져, skins가 그린 답변만 맨 왼쪽에 붙었습니다. 답변이
+   글로 시작하면 그 글을 답변의 첫 블록(`isFirstOfReply`)으로 넘겨 Claude Code가 `⏺`와 함께
+   그리게 하고, 나머지는 그 아래 2칸 들여 맞춥니다. 카드·헤딩으로 시작하면 skins가 `⏺` 칸을
+   직접 그립니다. 넘겨받은 글은 위에 빈 줄 하나를 두고 그려지므로, 터미널의 카드·헤딩은 위
+   여백만 둡니다(아래 여백까지 두면 카드 뒤 글 앞에 빈 줄이 둘 생깁니다).
+
+9. **터미널 헤딩·구분선** (`hooks/markdown.ts`의 `splitReply` 옵션 `headings`, `hooks/rows.tsx`의
+   `headingRow`/`ruleRow`). Claude Code 터미널 마크다운은 `#`는 밑줄·기울임 굵게, `##` 이하는
+   그냥 굵게 그려 본문 굵은 글씨와 구분이 안 됐고, `---`는 글자 그대로 남겼습니다. 터미널은
+   글자 크기를 바꿀 수 없으니 쓰인 그대로의 `#`·`##`·`###`…를 흐린색(`palette.muted`)으로 앞에
+   두고 제목을 굵게(1~3단계는 강조색 `palette.user`) 씁니다. `#` 개수로 단계가 보여 색이 거의 없는
+   스킨(noir)에서도 구분됩니다. 처음엔 1단계 아래 `━` 선, 2단계 앞 `▍` 막대를 썼는데 막대는
+   인용문처럼 보이고 3단계는 본문 굵은 글씨와 구분되지 않아 바꿨습니다. 구분선은 흐린색 `─`
+   선입니다. 데스크톱은 헤딩을 크게 그려 주므로 손대지 않습니다. 빈 줄 다음의 `---`만
+   구분선으로 보고, 글 바로 아래 `---`(setext 헤딩)는 글로 둡니다. `/skin headings on|off`,
+   설정 패널 `h`, 디자인 도구의 `settings.headings`로 끕니다(기본 켜짐).
 
 ## 테스트
 
@@ -65,5 +99,9 @@
 - 추가한 테스트: 한글 표 열 폭(`widthOf`/`columnWidths`/`cutCell`/`padCell`), `status_lines`
   파싱 함수, 터미널 셸 카드(`ToolUse`), 터미널 코드 카드의 테두리·Copy 위치, 표 헤더 색,
   `status_lines`의 `auto`/`skins`/`engine` 세 동작(스피너·턴 종료 줄).
+- 0.1.0-ko.2에서 추가: 헤딩·구분선 분리, 펜스 남기기·카드 끄기 옵션, `headings` 토글, 터미널 헤딩
+  색과 표시, 글 덩어리를 아래 훅에 넘기는 동작(첫 블록만 `isFirstOfReply`), 데스크톱·요약 블록·
+  헤딩 꺼짐일 때 통째로 넘기기, gfm-render 켜짐/꺼짐에 따른 Mermaid 처리. 원본 테스트 중 답변
+  구조를 따라가던 3개는 바깥 `⏺` 칸이 생긴 구조에 맞춰 경로만 고쳤습니다.
 
-테스트한 Claude Code 버전: 2.1.291
+테스트한 Claude Code 버전: 2.1.291 (0.1.0-ko.2는 2.1.296)

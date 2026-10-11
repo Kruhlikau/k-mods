@@ -4,7 +4,7 @@ import { DEFAULT_PREFS, parsePrefs, runSkinCommand, statusLinesMode } from '../h
 import { buildCustom, resolveSkin, skinNames, withSlot } from '../hooks/custom'
 import { runDesign } from '../hooks/designer'
 import { clipLines, diffstat, formatDuration, formatMs, pick, shortenPath } from '../hooks/format'
-import { columnWidths, cutCell, padCell, splitReply, widthOf } from '../hooks/markdown'
+import { columnWidths, cutCell, hasHeadingOrRule, padCell, splitReply, widthOf } from '../hooks/markdown'
 import { codeSvg, tokenize } from '../hooks/svg-code'
 import { diffLines, diffSvg, hunksOf } from '../hooks/svg-diff'
 import { fitColumns, kindOfCell, measure, tableSvg, wrapCell } from '../hooks/svg-table'
@@ -93,6 +93,43 @@ test('tables and closed code fences are split out of a reply, and a fence keeps 
       ['/up', '10'],
     ],
   })
+})
+
+test('k-mods: headings split out when asked, never inside a fence, and lose their inline marks', async () => {
+  const reply = ['# **Big** title #', 'Body', '## `Part`', '```', '# a comment', '```', '#not-a-heading', '###   '].join('\n')
+
+  expect(splitReply(reply).some(segment => segment.kind === 'heading')).toBe(false)
+
+  const segments = splitReply(reply, { headings: true })
+
+  expect(segments.map(segment => segment.kind)).toEqual(['heading', 'text', 'heading', 'code', 'text'])
+  expect(segments[0]).toEqual({ kind: 'heading', level: 1, text: 'Big title' })
+  expect(segments[2]).toEqual({ kind: 'heading', level: 2, text: 'Part' })
+  expect(hasHeadingOrRule(reply)).toBe(true)
+  expect(hasHeadingOrRule('#hashtag\n```\n# in code\n```')).toBe(true)
+  expect(hasHeadingOrRule('no heading here')).toBe(false)
+})
+
+test('k-mods: a thematic break after a blank line is a rule; right under text it stays a setext heading', async () => {
+  const reply = ['Intro', '', '---', 'Setext', '---', '', '* * *'].join('\n')
+
+  expect(splitReply(reply, { headings: true })).toEqual([
+    { kind: 'text', text: 'Intro\n' },
+    { kind: 'rule' },
+    { kind: 'text', text: 'Setext\n---\n' },
+    { kind: 'rule' },
+  ])
+  expect(hasHeadingOrRule('a\n\n___')).toBe(true)
+})
+
+test('k-mods: a kept fence language and cards off leave fences and tables in the text', async () => {
+  const reply = ['Flow:', '```mermaid', 'graph LR', 'A-->B', '```', '```ts', 'const a = 1', '```', '| a | b |', '|---|---|', '| 1 | 2 |'].join('\n')
+
+  const kept = splitReply(reply, { keepFences: ['mermaid'] })
+  expect(kept.map(segment => segment.kind)).toEqual(['text', 'code', 'table'])
+  expect(kept[0]).toEqual({ kind: 'text', text: 'Flow:\n```mermaid\ngraph LR\nA-->B\n```' })
+
+  expect(splitReply(reply, { cards: false })).toEqual([{ kind: 'text', text: reply }])
 })
 
 test('columns narrow from the widest until the table fits, and cells pad to their side', async () => {
@@ -191,6 +228,7 @@ test('/skin names a skin, switches parts, and refuses what it does not know', as
   expect(runSkinCommand('default', DEFAULT_PREFS, NAMES).prefs.skin).toBe('off')
   expect(runSkinCommand('rail off', DEFAULT_PREFS, NAMES).prefs.rail).toBe(false)
   expect(runSkinCommand('clip on', DEFAULT_PREFS, NAMES).prefs.clipOutput).toBe(true)
+  expect(runSkinCommand('headings off', DEFAULT_PREFS, NAMES).prefs.headings).toBe(false)
   expect(runSkinCommand('shimmer maybe', DEFAULT_PREFS, NAMES).prefs).toBe(DEFAULT_PREFS)
   expect(runSkinCommand('plaid', DEFAULT_PREFS, NAMES).channel).toBe('row')
   expect(runSkinCommand('list', { ...DEFAULT_PREFS, skin: 'nord' }, NAMES).message).toContain('● nord')

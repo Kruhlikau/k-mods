@@ -100,6 +100,7 @@ export function settingsPane(look: Look, ui: PaneUi, model: SettingsModel, actio
         <Text color={palette.muted}>Look</Text>
         {toggle('rail', 'r', prefs.rail)}
         {toggle('tables', 't', prefs.tables)}
+        {toggle('headings', 'h', prefs.headings)}
         {toggle('shimmer', 's', prefs.shimmer)}
         {toggle('band', 'b', prefs.band)}
         {toggle('clip', 'c', prefs.clipOutput)}

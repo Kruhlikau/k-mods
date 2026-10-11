@@ -14,7 +14,7 @@ export const DESIGN_TOOL = {
     'palette ({slot: "#rrggbb"}, only the slots to change), spinner (gerunds, like "Brewing"),',
     'done (past tense, like "Brewed"), apply (default true).',
     '"apply" switches to a skin by name, "delete" removes a made one,',
-    '"settings" switches rail, tables, shimmer, band, clip (booleans) and icons ("unicode" or "ascii").',
+    '"settings" switches rail, tables, headings, shimmer, band, clip (booleans) and icons ("unicode" or "ascii").',
     'Good skins keep fg and muted readable on a dark background, and surface and zebra one small step off it.',
   ].join(' '),
   inputSchema: {
@@ -33,6 +33,7 @@ export const DESIGN_TOOL = {
         properties: {
           rail: { type: 'boolean' },
           tables: { type: 'boolean' },
+          headings: { type: 'boolean' },
           shimmer: { type: 'boolean' },
           band: { type: 'boolean' },
           clip: { type: 'boolean' },
@@ -94,6 +95,7 @@ function settings(input: Input, state: DesignState): DesignOutcome {
     ...state.prefs,
     rail: flag(asked.rail, state.prefs.rail),
     tables: flag(asked.tables, state.prefs.tables),
+    headings: flag(asked.headings, state.prefs.headings),
     shimmer: flag(asked.shimmer, state.prefs.shimmer),
     band: flag(asked.band, state.prefs.band),
     clipOutput: flag(asked.clip, state.prefs.clipOutput),

@@ -23,6 +23,8 @@ export type Prefs = {
   icons: 'unicode' | 'ascii'
   rail: boolean
   tables: boolean
+  // k-mods: headings in the skin's accent, in the terminal.
+  headings: boolean
   shimmer: boolean
   band: boolean
   clipOutput: boolean

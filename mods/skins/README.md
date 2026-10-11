@@ -17,7 +17,7 @@ Claude Code 화면을 테마로 꾸며줘요. 도구 줄에 레일을 긋고, �
 - `/skin <이름>`. 바로 그 스킨으로 바꿔요 (`nord`, `dracula`, `gruvbox`, `catppuccin`, `tokyo-night`, `noir`, `mono`).
 - `/skin off` 또는 `/skin default`. Claude Code 기본 화면으로 돌아가요.
 - `/skin list`. 쓸 수 있는 스킨과 현재 켜진 옵션을 보여줘요.
-- `/skin rail|tables|shimmer|band|clip on|off`. 부분 기능만 켜고 꺼요 (아래 설정 참고).
+- `/skin rail|tables|headings|shimmer|band|clip on|off`. 부분 기능만 켜고 꺼요 (아래 설정 참고).
 - `/skin gallery`. 지금 스킨이 그리는 요소를 전부 번호 붙여 보여줘요.
 - `/skin icons unicode|ascii`. 글꼴에 유니코드 기호가 없으면 `ascii`로 바꿔요.
 - Claude에게 "분위기에 맞는 스킨 만들어줘" 같은 말로 직접 스킨을 설계하게 할 수도 있어요 (내장 스킬 사용).
@@ -28,7 +28,7 @@ Claude Code 화면을 테마로 꾸며줘요. 도구 줄에 레일을 긋고, �
 |---|---|---|
 | `status_lines` | `auto` | 스피너(작업 중 줄)와 턴 종료 줄을 누가 그릴지. `auto`는 k-mods의 `status-ko`가 켜져 있으면 그쪽에 맡기고, 아니면 이 mod가 그려요. `skins`는 항상 이 mod가, `engine`은 항상 Claude Code 기본(또는 다른 mod)이 그리게 해요. |
 
-`/skin` 명령으로 바꾸는 나머지 설정(스킨 선택, 레일, 표, 반짝임, 상단 띠, 출력 자르기)은 세션 안에
+`/skin` 명령으로 바꾸는 나머지 설정(스킨 선택, 레일, 표, 헤딩, 반짝임, 상단 띠, 출력 자르기)은 세션 안에
 저장되는 값이라 `/config`가 아니라 `/skin` 또는 설정 패널에서 바꿔요.
 
 ## 어떻게 동작하나요

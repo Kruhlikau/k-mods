@@ -8,7 +8,7 @@ import { forTheme, isLightTheme } from './light'
 import { DESIGN_TOOL, runDesign } from './designer'
 import type { DesignState } from './designer'
 import { clipLines, diffstat, pick } from './format'
-import { splitReply } from './markdown'
+import { hasHeadingOrRule, splitReply } from './markdown'
 import { askBand, desktopSpinnerRow, diffCard, footerRow, terminalCard, usageBand, groupRow, promptRow, replyRows, shellCard, spinnerRow, toolRow } from './rows'
 import type { Look, SvgElement, Ui } from './rows'
 import { galleryPane } from './gallery'
@@ -74,19 +74,22 @@ async function refreshTheme($: EngineInterface): Promise<void> {
   await update($, lightAtom, () => isLight)
 }
 
-// k-mods: true when a plugin named "status-ko" is enabled, under any marketplace. Read
-// once at session start (like the theme above) rather than on every redraw, since
-// `$.settings.read` reads settings.json and a Spinner redraws every animation frame.
-async function isStatusKoEnabled($: EngineInterface): Promise<boolean> {
+// k-mods: the names of the enabled plugins, under any marketplace ("status-ko",
+// "gfm-render"). Read once at session start (like the theme above) rather than on every
+// redraw, since `$.settings.read` reads settings.json and a Spinner redraws every
+// animation frame. A plugin loaded with --plugin-dir is not in settings, so not here.
+async function enabledPluginNames($: EngineInterface): Promise<Set<string>> {
   const settings = await $.settings.read()
   const enabledPlugins = settings.enabledPlugins
 
   if (typeof enabledPlugins !== 'object' || enabledPlugins === null) {
-    return false
+    return new Set()
   }
 
-  return Object.entries(enabledPlugins as Record<string, unknown>).some(
-    ([key, value]) => key.startsWith('status-ko@') && value === true,
+  return new Set(
+    Object.entries(enabledPlugins as Record<string, unknown>)
+      .filter(([, value]) => value === true)
+      .map(([key]) => key.split('@')[0] ?? key),
   )
 }
 
@@ -155,14 +158,16 @@ export const register: Register = (on, options) => {
   let ticker: Timer | undefined
   // The width the last reply was drawn at, shown by /skin list to tune table sizing.
   let lastColumns: number | undefined
-  // k-mods: whether status-ko is enabled this session. See isStatusKoEnabled above.
+  // k-mods: whether status-ko and gfm-render are enabled this session. See
+  // enabledPluginNames above.
   let statusKoEnabled = false
+  let gfmRenderEnabled = false
 
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'skin',
       description: 'Open the skin settings, or /skin <name | list | off>',
-      argumentHint: '[gallery | name | list | off | rail | tables | shimmer | band | clip | icons]',
+      argumentHint: '[gallery | name | list | off | rail | tables | headings | shimmer | band | clip | icons]',
       immediate: true,
     })
     await $.tool.register({
@@ -173,7 +178,9 @@ export const register: Register = (on, options) => {
     await load($)
     await refreshUsage($)
     await refreshTheme($)
-    statusKoEnabled = await isStatusKoEnabled($)
+    const enabled = await enabledPluginNames($)
+    statusKoEnabled = enabled.has('status-ko')
+    gfmRenderEnabled = enabled.has('gfm-render')
 
     // Only the spinner reads the frame, so a tick redraws the spinner and nothing else.
     ticker?.cancel()
@@ -459,17 +466,28 @@ reply width: ${lastColumns} columns`
   })
 
   // A reply keeps Claude Code's own drawing unless it holds a table to draw.
+  //
+  // k-mods: or, in the terminal, a heading. The text between the cards goes down the
+  // chain, one `next` per run of text, so a mod drawn after skins (gfm-render's alerts,
+  // task lists and diagrams) still draws it; a ```mermaid fence stays in that text
+  // while gfm-render is enabled. A summary Claude Code wrote in place of the text is
+  // left alone.
   on('ui.render', { component: 'AssistantMessage' }, async ($, e, next) => {
     const active = await activeSkin($)
 
     const text = e.props.text
+    const isTerminal = e.surface === 'terminal'
+    const headings = isTerminal && active !== null && active.prefs.headings && hasHeadingOrRule(text)
+    const cards = active !== null && active.prefs.tables && /\||```|~~~/.test(text)
 
-    if (active === null || !active.prefs.tables || !/\||```|~~~/.test(text)) {
+    if (active === null || e.props.isSummary === true || (!cards && !headings)) {
       return next(e)
     }
 
-    const segments = splitReply(text)
-    const fits = segments.every(segment => segment.kind === 'table' || (segment.kind === 'text' ? segment.text : segment.raw).length <= MAX_MARKDOWN)
+    const segments = splitReply(text, { cards, headings, keepFences: gfmRenderEnabled ? ['mermaid'] : [] })
+    const fits = segments.every(segment =>
+      segment.kind === 'text' ? segment.text.length <= MAX_MARKDOWN : segment.kind === 'code' ? segment.raw.length <= MAX_MARKDOWN : true,
+    )
 
     if (!fits || !segments.some(segment => segment.kind !== 'text')) {
       return next(e)
@@ -482,7 +500,26 @@ reply width: ${lastColumns} columns`
       void $.ui.copy({ text: copied, surface: e.surface }).then(result => $.ui.toast(result.isCopied ? 'Copied' : 'Could not copy here'))
     }
 
-    return replyRows(lookOf(ui, active, e.surface, copy), segments, e.viewport?.columns ?? 100, e.surface !== 'terminal' && 'Svg' in ui ? ui.Svg : undefined)
+    // k-mods: each run of text as the hooks below draw it. Only a run that opens the
+    // reply is handed down as its first block, to draw the terminal's bullet; see
+    // replyRows.
+    const drawn = new Map<number, Awaited<ReturnType<typeof next>>>()
+
+    for (const [i, segment] of segments.entries()) {
+      if (segment.kind === 'text') {
+        const isFirstOfReply = i === 0 && isTerminal && e.props.isFirstOfReply
+        drawn.set(i, await next({ ...e, props: { ...e.props, text: segment.text, isFirstOfReply } }))
+      }
+    }
+
+    return replyRows(
+      lookOf(ui, active, e.surface, copy),
+      segments,
+      e.viewport?.columns ?? 100,
+      e.surface !== 'terminal' && 'Svg' in ui ? ui.Svg : undefined,
+      drawn,
+      isTerminal ? e.props.isFirstOfReply : undefined,
+    )
   })
 
   // The terminal's spinner gets the skin's word with a shimmer; the desktop's keeps its

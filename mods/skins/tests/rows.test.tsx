@@ -2,6 +2,8 @@ import type { On, RenderElement } from 'claude-code'
 import { expect, mock, test } from 'claude-code/testing'
 import type { Engine } from 'claude-code/testing'
 
+import noir from '../hooks/themes/noir'
+
 const SURFACES = ['terminal', 'desktop'] as const
 
 const SITE = { plugin: 'skins', viewport: { columns: 100, rows: 30 } } as const
@@ -62,8 +64,9 @@ const runSkin = ($: Engine, args: string) =>
     presentation: { isFullscreen: false, columns: 100 },
   })
 
-// The engine's own answers, so a hook can mount without a session.
-function stubEngine(on: On) {
+// The engine's own answers, so a hook can mount without a session. k-mods: `render`
+// false leaves `ui.render` to the test (stubBelow).
+function stubEngine(on: On, render = true) {
   mock.clock(on, { now: 10_000 })
   on('session.cwd', () => ({ value: '/work' }))
   on('store.get', () => ({ value: undefined }))
@@ -72,7 +75,24 @@ function stubEngine(on: On) {
   on('ui.open', () => ({ value: { isPlaced: true } }))
   on('session.usage', () => ({ value: { startedAt: 0, context: { window: 200000, percent: 42 }, rateLimits: [{ kind: 'five_hour', percentUsed: 18 }] } }))
   // The dialog must hold Claude Code's own drawing, which a real engine hands back by reference.
-  on('ui.render', ($, e) => (e.component === 'AskUserQuestion' ? { type: 'engine', ref: 0 } : STOCK))
+  if (render) {
+    on('ui.render', ($, e) => (e.component === 'AskUserQuestion' ? { type: 'engine', ref: 0 } : STOCK))
+  }
+}
+
+type Seen = { text: string; isFirstOfReply: boolean; isSummary?: true }[]
+
+// k-mods: the hooks below skins, recording each reply block they are handed.
+function stubBelow(on: On, seen: Seen) {
+  on('ui.render', ($, e) => {
+    if (e.component !== 'AssistantMessage') {
+      return STOCK
+    }
+
+    seen.push({ text: e.props.text, isFirstOfReply: e.props.isFirstOfReply, ...(e.props.isSummary === true ? { isSummary: true as const } : {}) })
+
+    return { type: 'Text', props: {}, children: ['below'] }
+  })
 }
 
 const toolUse = (props: ReturnType<typeof call>, surface: (typeof SURFACES)[number] = 'terminal') =>
@@ -173,7 +193,8 @@ test('a reply with a table draws the table, a reply without one keeps its own dr
     ({ ...SITE, surface: 'terminal', component: 'AssistantMessage', requestId: 'r1', props: { text, isFirstOfReply: true } }) as const
 
   const withTable = await $.ui.mount(reply('Limits:\n\n| Route | Limit |\n|---|--:|\n| /chat | 60 |\n| /up | 10 |'))
-  expect(await withTable.find({ type: 'Markdown' })).toBeDefined()
+  // k-mods: the text beside the table is drawn by the hooks below (here, the stub).
+  expect(await withTable.find({ type: 'Text', text: 'stock row' })).toBeDefined()
   expect(await withTable.find({ type: 'Text', text: 'Route' })).toBeDefined()
   expect(await withTable.find({ type: 'Text', text: '10' })).toBeDefined()
   await withTable.unmount()
@@ -288,8 +309,9 @@ test('a table wider than its share spans the column instead of running off it', 
       props: { text: wide, isFirstOfReply: true },
     })
     type Node = { props?: { width?: unknown; position?: unknown; top?: unknown }; children?: readonly Node[] }
+    // k-mods: the reply is a row of the bullet's column and the body.
     const reply = (await ui.find({ type: 'Box' })) as Node
-    const frame = reply.children?.[0]
+    const frame = reply.children?.[1]?.children?.[0]
     // Copy sits on the frame's top border, laid over it at the right.
     const control = frame?.children?.at(-1)
 
@@ -521,9 +543,10 @@ test('a terminal code block is a bordered card with Copy inside it, not floating
     props: { text: 'Run:\n\n```ts\nconst a = 1\n```', isFirstOfReply: true },
   })
   type Node = { type?: string; props?: Record<string, unknown>; children?: readonly Node[] }
+  // k-mods: the reply opens with text, drawn below skins with its bullet (children[0]);
+  // the rest lines up under it in a column of its own, the code fence first.
   const reply = (await ui.find({ type: 'Box' })) as Node
-  // children[0] is the 'Run:' text (a Markdown element); the code fence is segment 1.
-  const card = reply.children?.[1] as Node | undefined
+  const card = reply.children?.[1]?.children?.[0] as Node | undefined
 
   expect(card?.props?.borderStyle).toBe('round')
   // Copy sits inside the card as a normal child, right-aligned, not position="absolute"
@@ -586,16 +609,18 @@ test('a finished Bash call draws its output as a card under the row in the termi
 
 // Shared setup for the status_lines tests below: a session.start that status-ko can be
 // "enabled" for, by what $.settings.read answers.
-function stubSessionStart(on: On, statusKoEnabled: boolean) {
+function stubSessionStart(on: On, statusKoEnabled: boolean, others: Record<string, boolean> = {}, render = true) {
   mock.clock(on, { now: 10_000 })
   on('store.get', () => ({ value: undefined }))
   on('session.usage', () => ({ value: { startedAt: 0, context: { window: 200000, percent: 10 }, rateLimits: [] } }))
   on('config.list', () => ({ value: [] as never }))
-  on('settings.read', () => ({ value: { enabledPlugins: statusKoEnabled ? { 'status-ko@k-mods': true } : {} } }))
+  on('settings.read', () => ({ value: { enabledPlugins: { ...(statusKoEnabled ? { 'status-ko@k-mods': true } : {}), ...others } } }))
   on('session.start', () => ({ cwd: '/work' }))
   on('command.register', () => ({ value: { command: 'skin' } }))
   on('tool.register', () => ({ value: { tool: 'mcp__skins__design' } }))
-  on('ui.render', () => STOCK)
+  if (render) {
+    on('ui.render', () => STOCK)
+  }
 }
 
 const SPINNER = { ...SITE, surface: 'terminal', component: 'Spinner', requestId: 'main', props: { word: 'Sauteing', message: null, suffix: '…', mode: 'responding' } } as const
@@ -630,4 +655,95 @@ test('status_lines defaults to "auto", which hands the spinner and the turn line
 
   const footer = await $.ui.mount(FOOTER)
   expect(await footer.find({ type: 'Text', text: 'stock row' })).toBeDefined()
+})
+
+// k-mods: headings, and the text between cards drawn by the hooks below skins.
+
+const REPLY = (surface: (typeof SURFACES)[number], text: string, extra: { isSummary?: true } = {}) =>
+  ({ ...SITE, surface, component: 'AssistantMessage', requestId: `h-${surface}`, props: { text, isFirstOfReply: true, ...extra } }) as const
+
+const HEADED = 'Intro\n\n# Title\n\nBody text\n\n## Part\n\n### Small'
+
+test('k-mods: in the terminal a heading is drawn in the skin’s accent, and the text between goes down the chain', async ($, on) => {
+  stubEngine(on, false)
+  const seen: Seen = []
+  stubBelow(on, seen)
+
+  const ui = await $.ui.mount(REPLY('terminal', HEADED))
+  type Node = { props?: Record<string, unknown>; children?: readonly Node[] }
+  const reply = (await ui.find({ type: 'Box' })) as Node
+
+  // The opening text is drawn below with its bullet; the rest lines up under it.
+  expect(reply.props?.flexDirection).toBe('column')
+  expect(reply.children?.[1]?.props?.marginLeft).toBe(2)
+  expect(await ui.find({ type: 'Text', text: '⏺' })).toBeUndefined()
+  expect(spanColor((await ui.find({ type: 'Text', text: /Title/ })) as Found, '# ')).toBe(noir.palette.muted)
+  expect(spanColor((await ui.find({ type: 'Text', text: /Title/ })) as Found, 'Title')).toBe(noir.palette.user)
+  expect(spanColor((await ui.find({ type: 'Text', text: /Part/ })) as Found, '## ')).toBe(noir.palette.muted)
+  expect(spanColor((await ui.find({ type: 'Text', text: /Part/ })) as Found, 'Part')).toBe(noir.palette.user)
+  expect(spanColor((await ui.find({ type: 'Text', text: /Small/ })) as Found, '### ')).toBe(noir.palette.muted)
+
+  // Each run of text was handed down once; only the opening one as the reply's first.
+  expect(seen).toEqual([
+    { text: 'Intro\n', isFirstOfReply: true },
+    { text: '\nBody text\n', isFirstOfReply: false },
+  ])
+  expect(await ui.find({ type: 'Text', text: 'below' })).toBeDefined()
+  await ui.unmount()
+
+  // A reply that opens with a heading gets the bullet from skins, in its own column.
+  const headed = await $.ui.mount(REPLY('terminal', '# Title\n\nBody\n\n---\n\nEnd'))
+  const row = (await headed.find({ type: 'Box' })) as Node
+  expect(row.props?.flexDirection).toBe('row')
+  expect(await headed.find({ type: 'Text', text: '⏺' })).toBeDefined()
+  expect(await headed.find({ type: 'Text', text: /^─+$/ })).toBeDefined()
+  expect(seen.slice(2).every(block => !block.isFirstOfReply)).toBe(true)
+})
+
+test('k-mods: the desktop, a summary block and headings off keep the reply whole for the hooks below', async ($, on) => {
+  stubEngine(on, false)
+  const seen: Seen = []
+  stubBelow(on, seen)
+
+  const desktop = await $.ui.mount(REPLY('desktop', HEADED))
+  await desktop.unmount()
+  const summary = await $.ui.mount(REPLY('terminal', `${HEADED}\n\n| a | b |\n|---|---|\n| 1 | 2 |`, { isSummary: true }))
+  await summary.unmount()
+
+  await runSkin($, 'headings off')
+  const off = await $.ui.mount(REPLY('terminal', HEADED))
+  await off.unmount()
+
+  expect(seen).toEqual([
+    { text: HEADED, isFirstOfReply: true },
+    { text: `${HEADED}\n\n| a | b |\n|---|---|\n| 1 | 2 |`, isFirstOfReply: true, isSummary: true },
+    { text: HEADED, isFirstOfReply: true },
+  ])
+})
+
+const DIAGRAM = 'Flow:\n\n```mermaid\ngraph LR\nA-->B\n```\n\n| a | b |\n|---|---|\n| 1 | 2 |'
+
+test('k-mods: with gfm-render enabled a mermaid fence stays in the text for it to draw', async ($, on) => {
+  stubSessionStart(on, false, { 'gfm-render@k-mods': true }, false)
+  const seen: Seen = []
+  stubBelow(on, seen)
+  await $.session.start({ surface: 'terminal', isInteractive: true, cwd: '/work' })
+
+  const ui = await $.ui.mount(REPLY('terminal', DIAGRAM))
+
+  expect(seen).toEqual([{ text: 'Flow:\n\n```mermaid\ngraph LR\nA-->B\n```\n', isFirstOfReply: true }])
+  expect(await ui.find({ type: 'Markdown', text: /mermaid/ })).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: 'a' })).toBeDefined()
+})
+
+test('k-mods: without gfm-render a mermaid fence is a code card like any other', async ($, on) => {
+  stubSessionStart(on, false, {}, false)
+  const seen: Seen = []
+  stubBelow(on, seen)
+  await $.session.start({ surface: 'terminal', isInteractive: true, cwd: '/work' })
+
+  const ui = await $.ui.mount(REPLY('terminal', DIAGRAM))
+
+  expect(seen).toEqual([{ text: 'Flow:\n', isFirstOfReply: true }])
+  expect(await ui.find({ type: 'Markdown', text: /```mermaid/ })).toBeDefined()
 })

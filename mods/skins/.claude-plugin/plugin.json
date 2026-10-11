@@ -1,6 +1,6 @@
 {
   "name": "skins",
-  "version": "0.1.0-ko.1",
+  "version": "0.1.0-ko.2",
   "description": "hellosverre/claude-skins의 k-mods 수정판. 한글 표 너비, 터미널 셸 출력 카드 등 한국어 환경에서 보이던 문제를 고쳤습니다. /skin으로 테마를 바꿉니다.",
   "author": { "name": "hellosverre", "url": "https://github.com/hellosverre" },
   "license": "MIT",
