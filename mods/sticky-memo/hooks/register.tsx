@@ -41,6 +41,8 @@ const SOFT_FG = '#E8EAED'
 /** 막 복사한 칩의 반짝임 (공용 팔레트의 본문 색). */
 const FLASH_BG = '#E8EAED'
 const EDIT_HINT = '내용은 입력창에서 고치고 Enter로 저장해요'
+const EMPTY_HINT = '자주 쓰는 문구를 붙여 두세요'
+const OPEN_HINT = '메모를 누르면 펼쳐져요'
 const PLACEHOLDER_TOAST = '입력창에 붙여넣은 글(또는 이미지)이 있어요. 보내거나 지운 뒤 다시 눌러 주세요'
 
 const memos = atom({ plugin: 'sticky-memo', key: 'memos' } as const, [])
@@ -223,10 +225,11 @@ async function startNew($: EngineInterface): Promise<void> {
     $.ui.toast(PLACEHOLDER_TOAST)
     return
   }
-  const id = newMemoId(await $.clock.now(), Math.random())
+  const now = await $.clock.now()
+  const id = newMemoId(now, Math.random())
   titleTyping = null
   await update($, isEditMode, () => true)
-  await setEdit($, { id, isNew: true, draft: box.text, title: null, color: null, isArmedDelete: false, hint: null })
+  await setEdit($, { id, openedAt: now, isNew: true, draft: box.text, title: null, color: null, isArmedDelete: false, hint: null })
 }
 
 /** 수정 모드에서 칩을 눌렀을 때: 그 메모를 펼치고 내용을 입력창에 옮긴다. 펼친 칩을 또 누르면 접는다. */
@@ -250,7 +253,7 @@ async function openEdit($: EngineInterface, id: string): Promise<void> {
     return
   }
   titleTyping = null
-  await setEdit($, { id, isNew: false, draft: box.text, title: null, color: null, isArmedDelete: false, hint: null })
+  await setEdit($, { id, openedAt: await $.clock.now(), isNew: false, draft: box.text, title: null, color: null, isArmedDelete: false, hint: null })
 }
 
 /**
@@ -378,12 +381,19 @@ async function drawBoard($: EngineInterface, e: Site, els: Els): Promise<RenderE
     return { width: cellWidth(` ${label} `), el: chip(key, ` ${label} `, isOpen ? INK : m.color, isOpen ? m.color : INK, isOpen) }
   })
 
-  const modeText = ' ✎ 수정 모드 '
-  const lead = editing ? [<Text backgroundColor={ACCENT} color={INK}>{modeText}</Text>] : []
+  // 세 가지를 모양으로 가른다: 메모는 파스텔 칩, 버튼(+·✎·완료)은 회색 칩, 모드 표시는 배경 없는 보라 글자
+  const modeText = '[✎ 수정 모드]'
+  const lead = editing
+    ? [
+        <Text color={ACCENT} bold>
+          {modeText}
+        </Text>,
+      ]
+    : []
   const controls: Array<{ key: string; text: string; bg: string; fg: string }> = editing
     ? [
         { key: 'ctl:add', text: ' + ', bg: SOFT, fg: SOFT_FG },
-        { key: 'ctl:done', text: ' 완료 ', bg: ACCENT, fg: INK },
+        { key: 'ctl:done', text: ' 완료 ', bg: SOFT, fg: SOFT_FG },
       ]
     : list.length === 0
       ? [{ key: 'ctl:add', text: ' + 붙임 메모 ', bg: COLORS[0], fg: INK }]
@@ -405,7 +415,11 @@ async function drawBoard($: EngineInterface, e: Site, els: Els): Promise<RenderE
   )
   const overflows = fit < memoChips.length
   const shown = overflows && !allShown ? memoChips.slice(0, fit) : memoChips
-  const more = !overflows ? null : allShown ? chip('ctl:more', ' 접기 ', SOFT, SOFT_FG) : chip('ctl:more', moreLabel(memoChips.length - fit, columns), SOFT, SOFT_FG)
+  const moreText = !overflows ? null : allShown ? ' 접기 ' : moreLabel(memoChips.length - fit, columns)
+  const more = moreText === null ? null : chip('ctl:more', moreText, SOFT, SOFT_FG)
+  const used = reserve + shown.reduce((sum, c) => sum + c.width + 1, 0) + (moreText === null ? 0 : cellWidth(moreText) + 1)
+  const hint = list.length === 0 && !editing ? EMPTY_HINT : editing && cur === null ? OPEN_HINT : null
+  const showHint = hint !== null && !allShown && columns - used >= cellWidth(hint)
   return (
     <Box flexDirection="column">
       <Box flexDirection="row" columnGap={1} flexWrap={allShown ? 'wrap' : 'nowrap'}>
@@ -413,7 +427,7 @@ async function drawBoard($: EngineInterface, e: Site, els: Els): Promise<RenderE
         {shown.map(c => c.el)}
         {more}
         {tail}
-        {list.length === 0 && !editing && <Text dimColor>자주 쓰는 문구를 붙여 두세요</Text>}
+        {showHint && <Text dimColor>{hint}</Text>}
       </Box>
       {panel}
     </Box>
@@ -427,10 +441,11 @@ function drawPanel($: EngineInterface, els: Els, list: readonly StickyMemo[], cu
   const color = cur.color ?? target?.color ?? nextColor(list)
   const title = cur.title ?? target?.title ?? ''
   const isCustom = !(COLORS as readonly string[]).includes(color)
+  const fresh = `${cur.id}-${cur.openedAt}`
   return (
     <Box flexDirection="column">
       <Input
-        key="title"
+        key={`title-${fresh}`}
         label="제목"
         placeholder="비우면 내용 첫 줄"
         value={title}
@@ -454,7 +469,7 @@ function drawPanel($: EngineInterface, els: Els, list: readonly StickyMemo[], cu
             {' ✓ '}
           </Text>
         )}
-        <Input key="hex" label="#" placeholder="RRGGBB" value="" submitLabel="적용" onSubmit={(value: string) => setHex($, value)} />
+        <Input key={`hex-${fresh}`} label="#" placeholder="RRGGBB" value="" submitLabel="적용" onSubmit={(value: string) => setHex($, value)} />
       </Box>
       <Box flexDirection="row" columnGap={1} flexWrap="wrap">
         <Button key="save" label="저장" variant="primary" onPress={() => endEdit($, 'save')} />

@@ -54,6 +54,14 @@ function world(on: On, memos: unknown[] = [A, B]): World {
 const START = { surface: 'terminal', isInteractive: true, cwd: '/work' } as const
 const typed = (text: string) => ({ text, origin: { kind: 'composer' }, wait: false }) as const
 const click = (key: string) => ({ type: 'up', x: 1, y: 0, button: 'left', in: key }) as const
+/** 펼친 메모의 입력칸 key ('제목' 또는 '#'). 수정을 시작할 때마다 새 key로 그려진다. */
+type Drawing = { findAll: (q: { type: string }) => Promise<Array<{ key: string | undefined; props: Record<string, unknown> }>> }
+async function fieldKey(ui: Drawing, label: string): Promise<string> {
+  const field = (await ui.findAll({ type: 'Input' })).find(i => i.props.label === label)
+  if (field?.key === undefined) throw new Error(`'${label}' 입력칸이 없어요`)
+  return field.key
+}
+
 /** 저장소에 지금 저장된 메모들. */
 const saved = (w: World): Memo[] => (w.store.board as { memos: Memo[] }).memos
 
@@ -133,12 +141,14 @@ test('edit mode: a click opens the memo into the prompt, Enter saves it and give
   w.box.text = '쓰던 글'
 
   await ui.pointer(click('ctl:edit'))
-  expect(await ui.find({ type: 'Text', text: ' ✎ 수정 모드 ' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: '[✎ 수정 모드]' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: '메모를 누르면 펼쳐져요' })).toBeDefined()
 
   await ui.pointer(click('memo:a'))
   expect(w.box.text).toBe(A.text)
   expect(w.copied).toEqual([])
-  expect(await ui.find({ type: 'Input', key: 'title' })).toBeDefined()
+  expect(await fieldKey(ui, '제목')).toMatch(/^title-a-/)
+  expect(await ui.find({ type: 'Text', text: '메모를 누르면 펼쳐져요' })).toBeUndefined()
 
   const result = await $.prompt.submit(typed('아래 변경사항을 꼼꼼히 리뷰해줘'))
   expect(result.drop).toBe("'리뷰 요청' 메모를 저장했어요")
@@ -146,7 +156,7 @@ test('edit mode: a click opens the memo into the prompt, Enter saves it and give
   expect(w.box.text).toBe('쓰던 글')
 
   expect(saved(w).find(m => m.id === 'a')?.text).toBe('아래 변경사항을 꼼꼼히 리뷰해줘')
-  expect(await ui.find({ type: 'Input', key: 'title' })).toBeUndefined()
+  expect(await ui.find({ type: 'Input' })).toBeUndefined()
 
   // 수정이 끝나면 Enter는 다시 평소처럼 보내진다
   expect((await $.prompt.submit(typed('그냥 질문'))).text).toBe('그냥 질문')
@@ -173,7 +183,7 @@ test('+ starts a new memo from the draft, takes a title, and leaves the draft in
 
   await ui.pointer(click('ctl:add'))
   expect(w.box.text).toBe('자주 쓰는 프롬프트')
-  await ui.input({ key: 'title', text: '프롬프트' })
+  await ui.input({ key: await fieldKey(ui, '제목'), text: '프롬프트' })
 
   const result = await $.prompt.submit(typed('자주 쓰는 프롬프트'))
   expect(result.drop).toBe("'프롬프트' 메모를 저장했어요")
@@ -194,10 +204,10 @@ test('swatches and hex codes recolor an existing memo at once; a bad code only h
   await ui.press({ key: 'color-1' })
   expect(saved(w)[0]?.color).toBe(COLORS[1])
 
-  await ui.input({ key: 'hex', text: 'ffb3ba' })
+  await ui.input({ key: await fieldKey(ui, '#'), text: 'ffb3ba' })
   expect(saved(w)[0]?.color).toBe('#FFB3BA')
 
-  await ui.input({ key: 'hex', text: 'zz' })
+  await ui.input({ key: await fieldKey(ui, '#'), text: 'zz' })
   expect(saved(w)[0]?.color).toBe('#FFB3BA')
   expect(await ui.find({ type: 'Text', text: /#RRGGBB 형식/ })).toBeDefined()
 })
@@ -251,7 +261,7 @@ test('cancel drops the edit and keeps the memo as it was', async ($, on) => {
   expect(w.box.text).toBe('쓰던 글')
 
   await ui.pointer(click('ctl:done'))
-  expect(await ui.find({ type: 'Text', text: ' ✎ 수정 모드 ' })).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: '[✎ 수정 모드]' })).toBeUndefined()
 })
 
 test('chips that do not fit fold into "N개 더", which unfolds them all', async ($, on) => {
@@ -309,3 +319,34 @@ test('an empty board offers one add chip and a hint, and yields to a survey', as
   const survey = await $.ui.mount({ ...BAND, surface: 'terminal', viewport: FULLSCREEN, props: { ...PROPS, hasSurvey: true } })
   expect(await survey.find({ key: 'ctl:add' })).toBeUndefined()
 })
+
+test('every edit draws fresh fields, so a title typed for one memo never shows in the next', async ($, on) => {
+  const w = world(on)
+  await $.session.start(START)
+  const ui = await $.ui.mount({ ...BAND, surface: 'terminal', viewport: FULLSCREEN })
+
+  await ui.pointer(click('ctl:add'))
+  const first = await fieldKey(ui, '제목')
+  // 제목을 치기만 하고(Enter 없이) 내용을 Enter로 저장한다
+  await ui.input({ key: first, text: '앞 메모 제목', kind: 'change' })
+  expect((await $.prompt.submit(typed('앞 메모 내용'))).drop).toBe("'앞 메모 제목' 메모를 저장했어요")
+  await w.clock.advance(60)
+
+  // 버튼처럼 쓰는 칩은 0.4초 안의 두 번째 클릭을 버리므로 간격을 둔다
+  await w.clock.advance(500)
+  await ui.pointer(click('ctl:add'))
+  const second = await fieldKey(ui, '제목')
+  expect(second).not.toBe(first)
+  expect((await ui.find({ key: second }))?.props.value).toBe('')
+
+  // 같은 메모를 다시 열어도 새 칸
+  await ui.press({ key: 'cancel' })
+  await w.clock.advance(500)
+  await ui.pointer(click('memo:a'))
+  const third = await fieldKey(ui, '제목')
+  await ui.press({ key: 'cancel' })
+  await w.clock.advance(500)
+  await ui.pointer(click('memo:a'))
+  expect(await fieldKey(ui, '제목')).not.toBe(third)
+})
+

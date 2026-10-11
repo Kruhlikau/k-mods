@@ -18,9 +18,12 @@ export type StickyBoard = {
 /**
  * 펼쳐서 고치는 중인 메모. 내용은 입력창을 빌려 고치므로, 사람이 쓰던 글(draft)을 보관했다가
  * 수정이 끝나면 돌려준다. title·color가 null이면 아직 안 바꾼 것.
+ * openedAt은 수정을 시작한 시각: 입력칸 key에 넣어 수정마다 새 칸을 그린다(엔진의 입력칸은
+ * key와 value가 그대로면 사람이 쳐 둔 글을 남겨서, 앞 메모의 제목이 다음 메모 칸에 보인다).
  */
 export type StickyEdit = {
   id: string
+  openedAt: number
   isNew: boolean
   draft: string
   title: string | null
