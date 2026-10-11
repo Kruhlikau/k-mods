@@ -132,9 +132,10 @@ PY
 
   echo "== $NAME"
   "$ROOT/scripts/demo/make-workspace.sh" "$DEMO/shop-api" >/dev/null
-  # --plugin-dir로 불러온 mod의 설정은 "<이름>@inline" 아래에 둔다
-  python3 -c 'import json, sys; print(json.dumps({"tui": "fullscreen", "spinnerTipsEnabled": False, "pluginConfigs": {sys.argv[1] + "@inline": {"options": json.loads(sys.argv[2])}}}))' \
-    "${S_PLUGINS%% *}" "$S_OPTIONS" > "$DEMO/settings.json"
+  # --plugin-dir로 불러온 mod의 설정은 "<이름>@inline" 아래에 둔다. enabledPlugins에도 적어 두는 건
+  # 다른 mod가 켜졌는지 설정으로 확인하는 mod(skins가 gfm-render를) 때문이다
+  python3 -c 'import json, sys; print(json.dumps({"tui": "fullscreen", "spinnerTipsEnabled": False, "enabledPlugins": {p + "@inline": True for p in sys.argv[3].split()}, "pluginConfigs": {sys.argv[1] + "@inline": {"options": json.loads(sys.argv[2])}}}))' \
+    "${S_PLUGINS%% *}" "$S_OPTIONS" "$S_PLUGINS" > "$DEMO/settings.json"
   ls "$HOME/.claude/plugins/store" 2>/dev/null > "$DEMO/store-before.txt" || true
   DIRS=""
   for p in $S_PLUGINS; do DIRS="$DIRS $(plugin_dir "$p")"; done
