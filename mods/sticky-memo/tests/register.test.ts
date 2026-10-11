@@ -201,7 +201,7 @@ test('swatches and hex codes recolor an existing memo at once; a bad code only h
   await ui.pointer(click('ctl:edit'))
   await ui.pointer(click('memo:a'))
 
-  await ui.press({ key: 'color-1' })
+  await ui.pointer(click('ctl:color-1'))
   expect(saved(w)[0]?.color).toBe(COLORS[1])
 
   await ui.input({ key: await fieldKey(ui, '#'), text: 'ffb3ba' })
@@ -348,5 +348,20 @@ test('every edit draws fresh fields, so a title typed for one memo never shows i
   await w.clock.advance(500)
   await ui.pointer(click('memo:a'))
   expect(await fieldKey(ui, '제목')).not.toBe(third)
+})
+
+test('without a pointer (desktop, keyboard) chips and swatches are labelled Buttons beside a color tab', async ($, on) => {
+  const w = world(on)
+  await $.session.start(START)
+  const ui = await $.ui.mount({ ...BAND, surface: 'desktop', viewport: FULLSCREEN })
+  expect((await ui.find({ key: 'memo:a' }))?.props.label).toBe('리뷰 요청')
+
+  await ui.press({ key: 'ctl:edit' })
+  await ui.press({ key: 'memo:a' })
+  expect(w.box.text).toBe(A.text)
+  expect((await ui.find({ key: 'ctl:color-0' }))?.props.label).toBe('✓')
+  await ui.press({ key: 'ctl:color-2' })
+  expect(saved(w)[0]?.color).toBe(COLORS[2])
+  expect((await ui.find({ key: 'ctl:color-2' }))?.props.label).toBe('✓')
 })
 

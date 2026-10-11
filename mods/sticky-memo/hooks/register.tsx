@@ -193,6 +193,9 @@ async function pressControl($: EngineInterface, name: string): Promise<void> {
     if (await endEdit($, 'save')) await update($, isEditMode, () => false)
   } else if (name === 'more') {
     await update($, isAllShown, shown => !shown)
+  } else if (name.startsWith('color-')) {
+    const color = COLORS[Number(name.slice('color-'.length))]
+    if (color !== undefined) await setColor($, color)
   }
 }
 
@@ -349,7 +352,7 @@ async function pressDelete($: EngineInterface): Promise<void> {
 
 /** 입력창 위 막대에 그릴 메모판: 평소엔 칩 한 줄, 펼친 메모가 있으면 그 아래 제목·색·저장 줄. */
 async function drawBoard($: EngineInterface, e: Site, els: Els): Promise<RenderElement> {
-  const { Box, Text, Button, Client } = els
+  const { Box, Text } = els
   const list = await read($, memos)
   const editing = await read($, isEditMode)
   const cur = await read($, edit)
@@ -358,27 +361,18 @@ async function drawBoard($: EngineInterface, e: Site, els: Els): Promise<RenderE
   const columns = e.props.bodyColumns
   const surface = e.surface
   // 마우스 신호를 받을 수 있으면 Client 칩, 아니면 키보드로도 누를 수 있는 Button 칩
-  const isPointer = surface === 'terminal' && e.viewport?.isFullscreen === true
-
-  const chip = (key: string, text: string, bg: string, fg: string, bold = false): RenderElement =>
-    isPointer ? (
-      <Client key={key} module="./chip.tsx" props={{ text, bg, fg, bold }} />
-    ) : (
-      <Button key={key} plain onPress={() => onClick($, key, surface)}>
-        <Text backgroundColor={bg} color={fg} bold={bold}>
-          {text}
-        </Text>
-      </Button>
-    )
+  const site: ChipSite = { isPointer: surface === 'terminal' && e.viewport?.isFullscreen === true, surface }
 
   const maxLabel = labelCells(columns)
   const memoChips = list.map(m => {
     const label = truncateCells(labelOf(m), maxLabel)
     const key = `memo:${m.id}`
     // 막 복사한 칩은 폭은 그대로 두고 밝게 반짝이며 앞에 ✓ (폭이 바뀌면 옆 칩들이 밀린다)
-    if (flashed === m.id) return { width: cellWidth(` ${label} `), el: chip(key, `✓${label} `, FLASH_BG, INK, true) }
+    const width = cellWidth(` ${label} `)
+    if (flashed === m.id) return { width, el: drawChip($, els, site, { key, text: `✓${label} `, bg: FLASH_BG, fg: INK, bold: true, hasTab: true }) }
     const isOpen = cur?.id === m.id
-    return { width: cellWidth(` ${label} `), el: chip(key, ` ${label} `, isOpen ? INK : m.color, isOpen ? m.color : INK, isOpen) }
+    const chip = { key, text: ` ${label} `, bg: isOpen ? INK : m.color, fg: isOpen ? m.color : INK, bold: isOpen, hasTab: true }
+    return { width, el: drawChip($, els, site, chip) }
   })
 
   // 세 가지를 모양으로 가른다: 메모는 파스텔 칩, 버튼(+·✎·완료)은 회색 칩, 모드 표시는 배경 없는 보라 글자
@@ -401,8 +395,8 @@ async function drawBoard($: EngineInterface, e: Site, els: Els): Promise<RenderE
           { key: 'ctl:add', text: ' + ', bg: SOFT, fg: SOFT_FG },
           { key: 'ctl:edit', text: ' ✎ ', bg: SOFT, fg: SOFT_FG },
         ]
-  const tail = controls.map(c => chip(c.key, c.text, c.bg, c.fg))
-  const panel = cur === null ? null : drawPanel($, els, list, cur)
+  const tail = controls.map(c => drawChip($, els, site, c))
+  const panel = cur === null ? null : drawPanel($, els, site, list, cur)
 
   // 막대는 기본 한 줄: 넘치는 칩은 'N개 더'로 묶고, 누르면 여러 줄로 다 펼친다
   const reserve = (editing ? cellWidth(modeText) + 1 : 0) + controls.reduce((sum, c) => sum + cellWidth(c.text) + 1, 0)
@@ -416,7 +410,7 @@ async function drawBoard($: EngineInterface, e: Site, els: Els): Promise<RenderE
   const overflows = fit < memoChips.length
   const shown = overflows && !allShown ? memoChips.slice(0, fit) : memoChips
   const moreText = !overflows ? null : allShown ? ' 접기 ' : moreLabel(memoChips.length - fit, columns)
-  const more = moreText === null ? null : chip('ctl:more', moreText, SOFT, SOFT_FG)
+  const more = moreText === null ? null : drawChip($, els, site, { key: 'ctl:more', text: moreText, bg: SOFT, fg: SOFT_FG })
   const used = reserve + shown.reduce((sum, c) => sum + c.width + 1, 0) + (moreText === null ? 0 : cellWidth(moreText) + 1)
   const hint = list.length === 0 && !editing ? EMPTY_HINT : editing && cur === null ? OPEN_HINT : null
   const showHint = hint !== null && !allShown && columns - used >= cellWidth(hint)
@@ -434,8 +428,30 @@ async function drawBoard($: EngineInterface, e: Site, els: Els): Promise<RenderE
   )
 }
 
+type ChipSite = { isPointer: boolean; surface: RenderSurface }
+type ChipSpec = { key: string; text: string; bg: string; fg: string; bold?: boolean; hasTab?: boolean }
+
+/**
+ * 누를 수 있는 칩 하나. 마우스가 되면 Client(한 번·두 번 클릭을 직접 받음), 아니면 키보드로도 누르는 Button.
+ * Button은 글자(label) 하나만 받아서(2.1.291) 색은 앞의 한 칸(hasTab)으로 보여 준다.
+ */
+function drawChip($: EngineInterface, els: Els, site: ChipSite, chip: ChipSpec): RenderElement {
+  const { Box, Text, Button, Client } = els
+  if (site.isPointer) {
+    return <Client key={chip.key} module="./chip.tsx" props={{ text: chip.text, bg: chip.bg, fg: chip.fg, bold: chip.bold === true }} />
+  }
+  const button = <Button key={chip.key} plain label={chip.text.trim() || '·'} onPress={() => onClick($, chip.key, site.surface)} />
+  if (chip.hasTab !== true) return button
+  return (
+    <Box key={`${chip.key}:tab`} flexDirection="row">
+      <Text backgroundColor={chip.bg}> </Text>
+      {button}
+    </Box>
+  )
+}
+
 /** 펼친 메모의 제목·색·저장 줄. 내용은 입력창에 있다. */
-function drawPanel($: EngineInterface, els: Els, list: readonly StickyMemo[], cur: StickyEdit): RenderElement {
+function drawPanel($: EngineInterface, els: Els, site: ChipSite, list: readonly StickyMemo[], cur: StickyEdit): RenderElement {
   const { Box, Text, Button, Input } = els
   const target = list.find(m => m.id === cur.id)
   const color = cur.color ?? target?.color ?? nextColor(list)
@@ -457,13 +473,7 @@ function drawPanel($: EngineInterface, els: Els, list: readonly StickyMemo[], cu
       />
       <Box flexDirection="row" columnGap={1} flexWrap="wrap">
         <Text dimColor>색</Text>
-        {COLORS.map((c, i) => (
-          <Button key={`color-${i}`} plain onPress={() => setColor($, c)}>
-            <Text backgroundColor={c} color={INK}>
-              {c === color ? ' ✓ ' : '   '}
-            </Text>
-          </Button>
-        ))}
+        {COLORS.map((c, i) => drawChip($, els, site, { key: `ctl:color-${i}`, text: c === color ? ' ✓ ' : '   ', bg: c, fg: INK, hasTab: true }))}
         {isCustom && (
           <Text backgroundColor={color} color={INK}>
             {' ✓ '}
