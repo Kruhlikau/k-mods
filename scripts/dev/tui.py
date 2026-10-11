@@ -17,6 +17,9 @@ mod가 그린 트리가 엔진 검증에서 떨어지면 엔진이 조용히 자
   waitfor:<정규식>[:<초>]    화면 글자가 정규식과 맞을 때까지 (기본 20초, 못 찾으면 실패)
   send:<글자>               글자를 보낸다. \\r \\n \\t \\x1b 같은 이스케이프를 쓸 수 있다
   key:<이름>                enter esc tab up down left right backspace ctrl-c ctrl-x ctrl-o space
+  click:<정규식>            화면에서 정규식이 처음 맞는 글자를 마우스 왼쪽으로 한 번 누른다 (fullscreen 모드에서만 받는다)
+  dclick:<정규식>           같은 자리를 빠르게 두 번 누른다 (더블클릭)
+  rclick:<정규식>           같은 자리를 오른쪽 버튼으로 누른다
   snap:<이름>               <out>/<이름>.txt 와 <이름>.svg 를 저장한다
   resize:<칸>x<줄>          창 크기를 바꾼다
 
@@ -137,6 +140,28 @@ def unescape(text):
     return codecs.decode(text.encode("utf-8"), "unicode_escape").encode("latin-1").decode("utf-8")
 
 
+def find_cell(screen, pattern):
+    """정규식이 처음 맞는 글자의 화면 칸 (열, 줄), 0부터. 넓은 글자(한글)는 두 칸으로 센다."""
+    for y in range(screen.lines):
+        line = screen.buffer[y]
+        text, cols = "", []
+        for x in range(screen.columns):
+            data = line[x].data
+            if data == "" and x > 0:
+                continue
+            text += data
+            cols.extend([x] * len(data))
+        m = re.search(pattern, text)
+        if m:
+            return cols[m.start()], y
+    return None
+
+
+def mouse(button, col, row):
+    """SGR 마우스 보고: 누름(M)과 뗌(m). 칸은 1부터."""
+    return f"\x1b[<{button};{col + 1};{row + 1}M\x1b[<{button};{col + 1};{row + 1}m"
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--cmd", required=True)
@@ -217,6 +242,19 @@ def main():
                 pump(0.15)
             elif kind == "key":
                 os.write(fd, KEYS[value].encode("utf-8"))
+                pump(0.15)
+            elif kind in ("click", "dclick", "rclick"):
+                cell = find_cell(screen, value)
+                if cell is None:
+                    print(f"[fail] {kind} {value!r} 화면에 없음", file=sys.stderr)
+                    snap(f"{kind}-missing")
+                    ok = False
+                    break
+                press = mouse(2 if kind == "rclick" else 0, *cell)
+                os.write(fd, press.encode("utf-8"))
+                if kind == "dclick":
+                    pump(0.08)
+                    os.write(fd, press.encode("utf-8"))
                 pump(0.15)
             elif kind == "snap":
                 pump(0.3)
