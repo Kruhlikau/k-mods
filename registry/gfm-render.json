@@ -3,6 +3,18 @@
   "name": "gfm-render",
   "summary": "대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요.",
   "summaryEn": "Renders GitHub Flavored Markdown alerts, task lists, strikethrough and Mermaid diagrams in the Claude Code transcript.",
+  "featured": true,
+  "preview": "docs/assets/mods/gfm-render.png",
+  "notes": [
+    "세션을 시작할 때마다 Claude에게 경고문·체크리스트·Mermaid를 쓸 수 있다는 짧은 안내문(약 250토큰)을 넣어요. 도움이 될 때만, 사용자의 서식 지시를 먼저 따르라고 적혀 있어요. `claude -p` 같은 스크립트 실행에도 들어가요. 끄려면 `/plugin configure gfm-render@k-mods`에서 `promptHint`를 끄세요(그리기는 그대로예요).",
+    "skins와 함께 쓰면 skins를 먼저 설치하세요. 먼저 설치한 mod가 먼저 그리는데, gfm-render가 먼저면 경고문·Mermaid가 있는 답변에서 skins의 표·헤딩 모양이 빠져요.",
+    "Mermaid 상자 안의 한글 라벨은 글자 폭을 1칸으로 세서 테두리가 어긋나요(원본 문제). 라벨은 영어로 짧게 쓰면 깔끔해요."
+  ],
+  "notesEn": [
+    "At each session start it adds a short note (about 250 tokens) telling Claude it may use alerts, task lists and Mermaid, only where they help and after the person's own formatting rules. It also applies to scripted runs such as `claude -p`. Turn it off with `promptHint` in `/plugin configure gfm-render@k-mods`; drawing stays on.",
+    "With skins, install skins first. The mod installed first draws first; with gfm-render first, replies holding an alert or a diagram lose skins' tables and headings.",
+    "Hangul labels inside Mermaid boxes are counted as one cell wide, so the box borders drift (upstream issue). Short English labels draw cleanly."
+  ],
   "category": "theme",
   "tags": [
     "마크다운",

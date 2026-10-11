@@ -2,6 +2,8 @@
 
 > 대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요.
 
+<img src="../../docs/assets/mods/gfm-render.png" alt="gfm-render" width="640">
+
 | | |
 | --- | --- |
 | 설치 이름 | `gfm-render` |
@@ -31,6 +33,12 @@ claude plugin install gfm-render@k-mods
 ```
 
 이미 열려 있는 세션에는 `/reload-plugins`로 바로 적용돼요. Claude Code 2.1.287 이상이 필요해요.
+
+## 알아 둘 점
+
+- 세션을 시작할 때마다 Claude에게 경고문·체크리스트·Mermaid를 쓸 수 있다는 짧은 안내문(약 250토큰)을 넣어요. 도움이 될 때만, 사용자의 서식 지시를 먼저 따르라고 적혀 있어요. `claude -p` 같은 스크립트 실행에도 들어가요. 끄려면 `/plugin configure gfm-render@k-mods`에서 `promptHint`를 끄세요(그리기는 그대로예요).
+- skins와 함께 쓰면 skins를 먼저 설치하세요. 먼저 설치한 mod가 먼저 그리는데, gfm-render가 먼저면 경고문·Mermaid가 있는 답변에서 skins의 표·헤딩 모양이 빠져요.
+- Mermaid 상자 안의 한글 라벨은 글자 폭을 1칸으로 세서 테두리가 어긋나요(원본 문제). 라벨은 영어로 짧게 쓰면 깔끔해요.
 
 ## 이 mod가 내 컴퓨터에서 하는 일
 

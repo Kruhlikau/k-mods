@@ -51,8 +51,8 @@ Descriptions in `/plugin` are in Korean; this page and each mod's source link ar
 
 | mod | What it does | Source |
 | --- | --- | --- |
-| [**skins**](docs/mods/skins.md) ⭐ | Themed cards for tool rows, tables, code and shell output; fixes CJK table widths and missing shell output in the terminal | 🔧 [hellosverre](https://github.com/hellosverre) · patched |
-| [**gfm-render**](docs/mods/gfm-render.md) | Renders GitHub Flavored Markdown alerts, task lists, strikethrough and Mermaid diagrams in the Claude Code transcript. | [briangtn](https://github.com/briangtn) |
+| [**skins**](docs/mods/skins.md) ⭐ | Themed cards for tool rows, tables, code and shell output, and headings marked by their #s in the terminal; fixes CJK table widths and missing shell output | 🔧 [hellosverre](https://github.com/hellosverre) · patched |
+| [**gfm-render**](docs/mods/gfm-render.md) ⭐ | Renders GitHub Flavored Markdown alerts, task lists, strikethrough and Mermaid diagrams in the Claude Code transcript. | [briangtn](https://github.com/briangtn) |
 | [**prismantis**](docs/mods/prismantis.md) | Colorful, themeable rendering for Claude Code replies across 15 themes: tables, code, diagrams, charts and tool rows, with copy buttons. | [Nahum Litvin](https://github.com/NahumLitvin) |
 
 ### 🐾 Animation & fun
@@ -150,7 +150,7 @@ Descriptions in `/plugin` are in Korean; this page and each mod's source link ar
 | mod | What it does | Source |
 | --- | --- | --- |
 | [**korean-pack**](docs/mods/korean-pack.md) | One install for a Korean Claude Code: menu, settings and status-line translation (ko-ui). status-ko is left out because it overwrites the same lines as ko-ui | 📦 bundle |
-| [**starter**](docs/mods/starter.md) | The k-mods starter set: ko-ui, skins, pixel-pals, ctx-strip and mod-store in one install | 📦 bundle |
+| [**starter**](docs/mods/starter.md) | The k-mods starter set: ko-ui, skins, gfm-render, pixel-pals, ctx-strip and mod-store in one install | 📦 bundle |
 | [**taxi-pack**](docs/mods/taxi-pack.md) | Claude Code as a taxi ride: meter (cost and limits), navigation (todo route), speed camera (risky-command check) and dashcam (tool-call recorder) in one install | 📦 bundle |
 <!-- END:catalog -->
 

@@ -97,7 +97,7 @@ export const CATALOG: CatalogEntry[] = [
   {
     "name": "skins",
     "displayName": "skins",
-    "summary": "도구 호출·표·코드·셸 출력을 테마 카드 형식으로 표시해요. 원본에서 한글 표가 잘리던 문제를 고쳤어요",
+    "summary": "도구 호출·표·코드·셸 출력을 테마 카드로, 헤딩은 # 표시로 구분해 보여줘요. 원본에서 한글 표가 잘리던 문제를 고쳤어요",
     "category": "theme",
     "kind": "patched",
     "author": "hellosverre",
@@ -107,7 +107,10 @@ export const CATALOG: CatalogEntry[] = [
       "/skin"
     ],
     "requires": [],
-    "notes": [],
+    "notes": [
+      "gfm-render와 함께 쓰면 표·코드·헤딩은 skins가, 경고문·체크리스트·Mermaid는 gfm-render가 한 답변 안에서 함께 그려요. 먼저 설치한 mod가 먼저 그리니 skins를 먼저 설치하세요(추천 세트는 이 순서로 설치해요).",
+      "헤딩 표시는 터미널에서만 바뀌어요. 끄려면 `/skin headings off`예요."
+    ],
     "permissions": [
       "도구 호출 제어",
       "대화 읽기",
@@ -126,11 +129,16 @@ export const CATALOG: CatalogEntry[] = [
     "homepage": "https://github.com/briangtn/claude-gfm-render",
     "commands": [],
     "requires": [],
-    "notes": [],
+    "notes": [
+      "세션을 시작할 때마다 Claude에게 경고문·체크리스트·Mermaid를 쓸 수 있다는 짧은 안내문(약 250토큰)을 넣어요. 도움이 될 때만, 사용자의 서식 지시를 먼저 따르라고 적혀 있어요. `claude -p` 같은 스크립트 실행에도 들어가요. 끄려면 `/plugin configure gfm-render@k-mods`에서 `promptHint`를 끄세요(그리기는 그대로예요).",
+      "skins와 함께 쓰면 skins를 먼저 설치하세요. 먼저 설치한 mod가 먼저 그리는데, gfm-render가 먼저면 경고문·Mermaid가 있는 답변에서 skins의 표·헤딩 모양이 빠져요.",
+      "Mermaid 상자 안의 한글 라벨은 글자 폭을 1칸으로 세서 테두리가 어긋나요(원본 문제). 라벨은 영어로 짧게 쓰면 깔끔해요."
+    ],
     "permissions": [
       "프로그램 실행",
       "대화 읽기"
-    ]
+    ],
+    "featured": true
   },
   {
     "name": "prismantis",
@@ -1536,7 +1544,7 @@ export const CATALOG: CatalogEntry[] = [
   {
     "name": "starter",
     "displayName": "추천 세트",
-    "summary": "처음 설치하기 좋은 추천 세트예요. ko-ui, skins, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요",
+    "summary": "처음 설치하기 좋은 추천 세트예요. ko-ui, skins, gfm-render, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요",
     "category": "bundle",
     "kind": "bundle",
     "author": "SeongGwangJu",
@@ -1556,6 +1564,7 @@ export const CATALOG: CatalogEntry[] = [
     "dependencies": [
       "ko-ui",
       "skins",
+      "gfm-render",
       "pixel-pals",
       "ctx-strip",
       "mod-store"

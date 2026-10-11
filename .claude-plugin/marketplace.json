@@ -34,7 +34,7 @@
     {
       "name": "skins",
       "source": "./mods/skins",
-      "description": "도구 호출·표·코드·셸 출력을 테마 카드 형식으로 표시해요. 원본에서 한글 표가 잘리던 문제를 고쳤어요",
+      "description": "도구 호출·표·코드·셸 출력을 테마 카드로, 헤딩은 # 표시로 구분해 보여줘요. 원본에서 한글 표가 잘리던 문제를 고쳤어요",
       "category": "테마",
       "tags": [
         "테마",
@@ -1459,7 +1459,7 @@
       "name": "starter",
       "source": "./bundles/starter",
       "displayName": "추천 세트",
-      "description": "처음 설치하기 좋은 추천 세트예요. ko-ui, skins, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요",
+      "description": "처음 설치하기 좋은 추천 세트예요. ko-ui, skins, gfm-render, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요",
       "category": "묶음",
       "tags": [
         "추천",
@@ -1475,6 +1475,7 @@
       "dependencies": [
         "ko-ui",
         "skins",
+        "gfm-render",
         "pixel-pals",
         "ctx-strip",
         "mod-store"

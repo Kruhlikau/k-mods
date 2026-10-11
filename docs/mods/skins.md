@@ -1,6 +1,6 @@
 # skins
 
-> 도구 호출·표·코드·셸 출력을 테마 카드 형식으로 표시해요. 원본에서 한글 표가 잘리던 문제를 고쳤어요
+> 도구 호출·표·코드·셸 출력을 테마 카드로, 헤딩은 # 표시로 구분해 보여줘요. 원본에서 한글 표가 잘리던 문제를 고쳤어요
 
 <img src="../../docs/assets/mods/skins.png" alt="skins" width="640">
 
@@ -33,6 +33,11 @@ claude plugin install skins@k-mods
 ```
 
 이미 열려 있는 세션에는 `/reload-plugins`로 바로 적용돼요. Claude Code 2.1.287 이상이 필요해요.
+
+## 알아 둘 점
+
+- gfm-render와 함께 쓰면 표·코드·헤딩은 skins가, 경고문·체크리스트·Mermaid는 gfm-render가 한 답변 안에서 함께 그려요. 먼저 설치한 mod가 먼저 그리니 skins를 먼저 설치하세요(추천 세트는 이 순서로 설치해요).
+- 헤딩 표시는 터미널에서만 바뀌어요. 끄려면 `/skin headings off`예요.
 
 ## 이 mod가 내 컴퓨터에서 하는 일
 
