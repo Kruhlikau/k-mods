@@ -5,6 +5,7 @@
 #
 # 타입 선언은 Claude Code가 --plugin-dir 로 mod를 불러올 때 써 준다. 모델 호출 없이 받으려고
 # 명령 하나만 등록한 임시 mod를 claude -p 로 한 번 불러 .cache/types/<버전>/ 에 보관한다.
+# 2.1.296부터는 감시(hot reload)하는 폴더에만 써 주므로 CLAUDE_CODE_PLUGIN_DIR_WATCH=1 로 감시를 켠다.
 set -e
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 CC="$ROOT/scripts/cc.sh"
@@ -25,7 +26,7 @@ export function register(on) {
   on('command.run', { command: 'k-mods-type-probe' }, async () => ({ text: 'ok' }))
 }
 TS
-  (cd "$TMP" && "$CC" -p "/k-mods-type-probe" --plugin-dir "$TMP/probe" < /dev/null > /dev/null 2>&1) || true
+  (cd "$TMP" && CLAUDE_CODE_PLUGIN_DIR_WATCH=1 "$CC" -p "/k-mods-type-probe" --plugin-dir "$TMP/probe" < /dev/null > /dev/null 2>&1) || true
   if [ ! -f "$TMP/probe/.claude-plugin/types/claude-code/index.d.ts" ]; then
     echo "타입 선언을 만들지 못했습니다 (Claude Code 로그인이 필요합니다)" >&2
     exit 1
