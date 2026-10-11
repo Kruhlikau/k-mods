@@ -1,0 +1,40 @@
+{
+  "$schema": "./_schema.json",
+  "name": "sticky-memo",
+  "displayName": "붙임 메모",
+  "displayNameEn": "Sticky Memo",
+  "summary": "자주 쓰는 문구를 입력창 위에 색깔 칩으로 붙여 두고, 한 번 클릭하면 복사, 두 번 클릭하면 입력창에 넣어요",
+  "summaryEn": "Pin frequently used snippets as colored chips above the prompt: click once to copy, twice to drop one into the prompt",
+  "category": "tool",
+  "tags": [
+    "메모",
+    "상용구",
+    "클립보드"
+  ],
+  "kind": "original",
+  "source": "./mods/sticky-memo",
+  "author": {
+    "name": "SeongGwangJu",
+    "url": "https://github.com/SeongGwangJu"
+  },
+  "license": "MIT",
+  "commands": [
+    "/sticky"
+  ],
+  "surfaces": [
+    "terminal",
+    "desktop"
+  ],
+  "preview": "docs/assets/mods/sticky-memo.gif",
+  "review": {
+    "date": "2026-10-11",
+    "by": "k-mods",
+    "claudeCode": "2.1.296",
+    "method": [
+      "validate",
+      "code-read",
+      "unit-test",
+      "live-session"
+    ]
+  }
+}

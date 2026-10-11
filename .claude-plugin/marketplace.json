@@ -744,6 +744,25 @@
       "repository": "https://github.com/SeongGwangJu/k-mods"
     },
     {
+      "name": "sticky-memo",
+      "source": "./mods/sticky-memo",
+      "displayName": "붙임 메모",
+      "description": "자주 쓰는 문구를 입력창 위에 색깔 칩으로 붙여 두고, 한 번 클릭하면 복사, 두 번 클릭하면 입력창에 넣어요",
+      "category": "도구",
+      "tags": [
+        "메모",
+        "상용구",
+        "클립보드"
+      ],
+      "author": {
+        "name": "SeongGwangJu",
+        "url": "https://github.com/SeongGwangJu"
+      },
+      "homepage": "https://github.com/SeongGwangJu/k-mods/tree/main/mods/sticky-memo",
+      "license": "MIT",
+      "repository": "https://github.com/SeongGwangJu/k-mods"
+    },
+    {
       "name": "agent-flow",
       "source": {
         "source": "git-subdir",

@@ -131,6 +131,7 @@ Claude가 일하는 동안 애니메이션이나 게임을 표시해요
 | --- | --- | --- |
 | [**모드 상점**](docs/mods/mod-store.md) ⭐<br>`mod-store` | `/k-mods`를 입력하면 카탈로그가 열려요. 버튼으로 mod를 설치하거나 제거할 수 있어요 | 🇰🇷 k-mods |
 | [**메모장**](docs/mods/memo-pad.md)<br>`memo-pad` | Claude가 일하는 동안 다음에 시킬 일을 적어 두고 버튼 한 번으로 입력창에 추가해요 | 🇰🇷 k-mods |
+| [**붙임 메모**](docs/mods/sticky-memo.md)<br>`sticky-memo` | 자주 쓰는 문구를 입력창 위에 색깔 칩으로 붙여 두고, 한 번 클릭하면 복사, 두 번 클릭하면 입력창에 넣어요 | 🇰🇷 k-mods |
 | [**agent-flow**](docs/mods/agent-flow.md) | 메인 루프와 서브에이전트의 관계를 트리 구조로 표시해요. 각 에이전트에 오간 컨텍스트 양과 답변은 클릭해서 볼 수 있어요 | [claude-code-templates](https://www.aitmpl.com) |
 | [**agent-quick-menu**](docs/mods/agent-quick-menu.md) | 설치된 플러그인의 명령과 설정을 한 패널에서 찾아 바로 실행할 수 있어요. | [dasganni](https://github.com/dasganni) |
 | [**image-view**](docs/mods/image-view.md) | 붙여넣은 이미지를 `[Image #1]` 같은 글자 대신 입력창 위 썸네일로 보여줘요. | [gggodlin](https://github.com/GGGODLIN) |

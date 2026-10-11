@@ -1,0 +1,20 @@
+{
+  "name": "sticky-memo",
+  "version": "1.0.0",
+  "description": "자주 쓰는 문구를 입력창 위에 붙여 두고, 한 번 클릭하면 복사, 두 번 클릭하면 입력창에 넣어요",
+  "author": {
+    "name": "SeongGwangJu",
+    "url": "https://github.com/SeongGwangJu"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/SeongGwangJu/k-mods/tree/main/mods/sticky-memo",
+  "repository": "https://github.com/SeongGwangJu/k-mods",
+  "keywords": [
+    "korean",
+    "메모",
+    "snippet",
+    "clipboard",
+    "productivity"
+  ],
+  "types": "./types/index.d.ts"
+}

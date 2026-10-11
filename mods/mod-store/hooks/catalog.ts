@@ -821,6 +821,25 @@ export const CATALOG: CatalogEntry[] = [
     ]
   },
   {
+    "name": "sticky-memo",
+    "displayName": "붙임 메모",
+    "summary": "자주 쓰는 문구를 입력창 위에 색깔 칩으로 붙여 두고, 한 번 클릭하면 복사, 두 번 클릭하면 입력창에 넣어요",
+    "category": "tool",
+    "kind": "original",
+    "author": "SeongGwangJu",
+    "license": "MIT",
+    "homepage": "https://github.com/SeongGwangJu/k-mods/tree/main/mods/sticky-memo",
+    "commands": [
+      "/sticky"
+    ],
+    "requires": [],
+    "notes": [],
+    "permissions": [
+      "프롬프트 입력",
+      "대화 읽기"
+    ]
+  },
+  {
     "name": "agent-flow",
     "displayName": "agent-flow",
     "summary": "메인 루프와 서브에이전트의 관계를 트리 구조로 표시해요. 각 에이전트에 오간 컨텍스트 양과 답변은 클릭해서 볼 수 있어요",

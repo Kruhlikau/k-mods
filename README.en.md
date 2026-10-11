@@ -98,6 +98,7 @@ Descriptions in `/plugin` are in Korean; this page and each mod's source link ar
 | --- | --- | --- |
 | [**mod-store**](docs/mods/mod-store.md) ⭐ | Type /k-mods to browse this catalog in a pane and install or remove mods with one key | 🇰🇷 k-mods |
 | [**memo-pad**](docs/mods/memo-pad.md) | Jot down your next instructions while Claude works, then drop one into the prompt with a button | 🇰🇷 k-mods |
+| [**sticky-memo**](docs/mods/sticky-memo.md) | Pin frequently used snippets as colored chips above the prompt: click once to copy, twice to drop one into the prompt | 🇰🇷 k-mods |
 | [**agent-flow**](docs/mods/agent-flow.md) | A side pane showing the main loop and every subagent as a live tree, with the context handed down and the answer handed back for each. | [claude-code-templates](https://www.aitmpl.com) |
 | [**agent-quick-menu**](docs/mods/agent-quick-menu.md) | A pane and prompt band listing every installed plugin's commands and settings, with favourites and Claude Code's own /config rows. | [dasganni](https://github.com/dasganni) |
 | [**image-view**](docs/mods/image-view.md) | See the images you paste into Claude Code: thumbnails above the prompt instead of bare [Image #1] tags. | [gggodlin](https://github.com/GGGODLIN) |
