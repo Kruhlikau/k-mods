@@ -1,6 +1,6 @@
 // 순수 로직 단위 테스트. $/on 없이 hooks/lib.ts, hooks/catalog.ts의 함수만 부른다.
 // 카탈로그 "항목"은 scripts/build.mjs가 나중에 바꿀 수 있으므로, 여기서는 특정
-// seed 항목(예: status-ko)을 전제하지 않고 이 파일 안의 fixture만 쓴다.
+// seed 항목(예: ctx-strip)을 전제하지 않고 이 파일 안의 fixture만 쓴다.
 
 import { expect, test } from 'claude-code/testing'
 

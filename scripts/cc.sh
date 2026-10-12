@@ -1,7 +1,7 @@
 #!/bin/sh
 # Claude Code 2.1.287 이상(mods 지원)을 찾아 인자를 그대로 넘겨 실행한다.
 #
-#   scripts/cc.sh plugin validate --strict mods/status-ko
+#   scripts/cc.sh plugin validate --strict mods/ctx-strip
 #
 # 찾는 순서
 #   1. CLAUDE_BIN 환경 변수

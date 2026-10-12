@@ -297,25 +297,6 @@
       "repository": "https://github.com/SeongGwangJu/k-mods"
     },
     {
-      "name": "status-ko",
-      "source": "./mods/status-ko",
-      "displayName": "작업 상태 한국어",
-      "description": "작업 중에는 '읽는 중 · page.tsx'처럼 지금 하는 일을 보여줘요. 끝나면 모델·시간·도구·캐시를 한 줄로 정리해요",
-      "category": "상태줄",
-      "tags": [
-        "한국어",
-        "스피너",
-        "상태줄"
-      ],
-      "author": {
-        "name": "SeongGwangJu",
-        "url": "https://github.com/SeongGwangJu"
-      },
-      "homepage": "https://github.com/SeongGwangJu/k-mods/tree/main/mods/status-ko",
-      "license": "MIT",
-      "repository": "https://github.com/SeongGwangJu/k-mods"
-    },
-    {
       "name": "agent-radar",
       "source": {
         "source": "git-subdir",
@@ -1457,7 +1438,7 @@
       "name": "korean-pack",
       "source": "./bundles/korean-pack",
       "displayName": "한국어 팩",
-      "description": "메뉴·설정·작업 표시줄 번역(ko-ui)을 설치해 Claude Code 화면을 한국어로 바꿔요. 작업 상태 한국어(status-ko)는 ko-ui와 같은 줄을 덮어써서 뺐어요",
+      "description": "메뉴·설정·작업 표시줄 번역(ko-ui)을 설치해 Claude Code 화면을 한국어로 바꿔요",
       "category": "묶음",
       "tags": [
         "한국어",

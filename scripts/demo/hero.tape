@@ -1,5 +1,5 @@
 # README 맨 위 GIF. scripts/demo/record.sh hero 로 녹화한다.
-# 한국어 상태줄(status-ko) · 냥캣 스피너(spinner) · 컨텍스트 막대(ctx-strip) · 한국어 메뉴(ko-ui)
+# 냥캣 스피너(spinner) · 컨텍스트 막대(ctx-strip) · 한국어 메뉴(ko-ui)
 Output docs/assets/hero.gif
 Set Shell "bash"
 Set FontFamily "D2Coding ligature"

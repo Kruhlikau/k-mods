@@ -20,7 +20,7 @@ fetch ko-ui https://github.com/moduvoice/claude-code-ko-ui.git "$(sha ko-ui)"
 
 SETTINGS='{"tui":"fullscreen","pluginConfigs":{"spinner@inline":{"options":{"theme":"nyan","language":"ko","companion":false,"footerButton":false}}}}'
 case "$NAME" in
-  hero) DIRS="$ROOT/mods/status-ko $ROOT/mods/ctx-strip $EXT/hoobnn/claude-code/spinner $EXT/ko-ui" ;;
+  hero) DIRS="$ROOT/mods/ctx-strip $EXT/hoobnn/claude-code/spinner $EXT/ko-ui" ;;
   *) DIRS="${K_PLUGIN_DIRS:?K_PLUGIN_DIRS 를 지정하세요}" ;;
 esac
 ARGS=""

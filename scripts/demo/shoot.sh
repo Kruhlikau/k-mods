@@ -8,7 +8,7 @@
 #
 # 필요: macOS, vhs·ffmpeg(brew install vhs ffmpeg), D2Coding ligature 글꼴, python3,
 #       로그인된 Claude Code 2.1.287 이상
-# 모델을 부르는 장면은 내 사용량을 쓴다: blast-radius-ko·status-ko·skins는 Sonnet 한 턴,
+# 모델을 부르는 장면은 내 사용량을 쓴다: blast-radius-ko·skins는 Sonnet 한 턴,
 # ctx-strip은 Haiku 4.5로 큰 파일을 읽는 한 턴(약 3분)
 #
 # 장면 파일의 "# shoot:" 줄에 촬영 설정을 적는다.

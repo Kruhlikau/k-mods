@@ -375,23 +375,6 @@ export const CATALOG: CatalogEntry[] = [
     "featured": true
   },
   {
-    "name": "status-ko",
-    "displayName": "작업 상태 한국어",
-    "summary": "작업 중에는 '읽는 중 · page.tsx'처럼 지금 하는 일을 보여줘요. 끝나면 모델·시간·도구·캐시를 한 줄로 정리해요",
-    "category": "statusline",
-    "kind": "original",
-    "author": "SeongGwangJu",
-    "license": "MIT",
-    "homepage": "https://github.com/SeongGwangJu/k-mods/tree/main/mods/status-ko",
-    "commands": [],
-    "requires": [],
-    "notes": [],
-    "permissions": [
-      "도구 호출 제어",
-      "대화 읽기"
-    ]
-  },
-  {
     "name": "agent-radar",
     "displayName": "agent-radar",
     "summary": "실행 중인 서브에이전트마다 경과 시간·도구 호출 수·현재 작업을 입력창 위 한 줄로 표시해요. /radar로 전체 목록과 대화 내용을 확인할 수 있어요.",
@@ -1543,7 +1526,7 @@ export const CATALOG: CatalogEntry[] = [
   {
     "name": "korean-pack",
     "displayName": "한국어 팩",
-    "summary": "메뉴·설정·작업 표시줄 번역(ko-ui)을 설치해 Claude Code 화면을 한국어로 바꿔요. 작업 상태 한국어(status-ko)는 ko-ui와 같은 줄을 덮어써서 뺐어요",
+    "summary": "메뉴·설정·작업 표시줄 번역(ko-ui)을 설치해 Claude Code 화면을 한국어로 바꿔요",
     "category": "bundle",
     "kind": "bundle",
     "author": "SeongGwangJu",
