@@ -54,8 +54,8 @@ Claude Code 안에서 실행되는 플러그인 코드예요. 도구 호출, 프
 | mod | 무엇을 해 주나요 |
 | --- | --- |
 | [**ko-ui**](docs/mods/ko-ui.md)<br>`/plugin install ko-ui@k-mods`<br><img src="docs/assets/mods/ko-ui.png" alt="ko-ui" width="420"> | 슬래시 커맨드 설명, `/config` 항목, 작업 표시줄 같은 화면 문구를 번역 사전에 맞춰 한국어로 표시해요. |
-| [**skins**](docs/mods/skins.md)<br>`/plugin install skins@k-mods`<br><img src="docs/assets/mods/skins.png" alt="skins" width="420"> | 도구 호출·표·코드·셸 출력을 테마 카드로, 헤딩은 # 표시로 구분해 보여줘요. 원본에서 한글 표가 잘리던 문제를 고쳤어요 |
 | [**gfm-render**](docs/mods/gfm-render.md)<br>`/plugin install gfm-render@k-mods`<br><img src="docs/assets/mods/gfm-render.png" alt="gfm-render" width="420"> | 대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요. |
+| [**skins**](docs/mods/skins.md)<br>`/plugin install skins@k-mods`<br><img src="docs/assets/mods/skins.png" alt="skins" width="420"> | 도구 호출·표·코드·셸 출력·Mermaid를 테마 카드로 그리고, 헤딩·경고문·체크리스트도 스킨 모양으로 보여줘요. 테마 15종을 /skin으로 바로 바꿔요 |
 | [**pixel-pals**](docs/mods/pixel-pals.md)<br>`/plugin install pixel-pals@k-mods`<br><img src="docs/assets/mods/pixel-pals.gif" alt="pixel-pals" width="420"> | Claude가 일하는 동안 입력창 위에 냥캣·Clawd·썬더 같은 픽셀 친구들이 지나가요. 엄선한 장면 6종에 clawd-tales의 Clawd 이야기를 합친 한국어판이에요 |
 | [**컨텍스트 막대**](docs/mods/ctx-strip.md)<br>`/plugin install ctx-strip@k-mods`<br><img src="docs/assets/mods/ctx-strip.png" alt="컨텍스트 막대" width="420"> | 컨텍스트 구성(대화·도구·스킬…)을 입력창 위 막대로 표시해요. 서브에이전트가 실행되면 한 줄로 알려줘요 |
 | [**모드 상점**](docs/mods/mod-store.md)<br>`/plugin install mod-store@k-mods`<br><img src="docs/assets/mods/mod-store.png" alt="모드 상점" width="420"> | `/k-mods`를 입력하면 카탈로그가 열려요. 버튼으로 mod를 설치하거나 제거할 수 있어요 |
@@ -78,8 +78,8 @@ Claude Code 안에서 실행되는 플러그인 코드예요. 도구 호출, 프
 
 | mod | 무엇을 해 주나요 | 출처 |
 | --- | --- | --- |
-| [**skins**](docs/mods/skins.md) ⭐ | 도구 호출·표·코드·셸 출력을 테마 카드로, 헤딩은 # 표시로 구분해 보여줘요. 원본에서 한글 표가 잘리던 문제를 고쳤어요 | 🔧 [hellosverre](https://github.com/hellosverre) 원작 · 한국 수정판 |
 | [**gfm-render**](docs/mods/gfm-render.md) ⭐ | 대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요. | [briangtn](https://github.com/briangtn) |
+| [**skins**](docs/mods/skins.md) ⭐ | 도구 호출·표·코드·셸 출력·Mermaid를 테마 카드로 그리고, 헤딩·경고문·체크리스트도 스킨 모양으로 보여줘요. 테마 15종을 /skin으로 바로 바꿔요 | [hellosverre](https://github.com/hellosverre) |
 | [**prismantis**](docs/mods/prismantis.md) | 표·코드·다이어그램·도구 호출 결과를 15가지 테마로 표시하고 복사 버튼을 추가해요. | [Nahum Litvin](https://github.com/NahumLitvin) |
 
 ### 🐾 애니메이션

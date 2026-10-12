@@ -95,30 +95,6 @@ export const CATALOG: CatalogEntry[] = [
     "featured": true
   },
   {
-    "name": "skins",
-    "displayName": "skins",
-    "summary": "도구 호출·표·코드·셸 출력을 테마 카드로, 헤딩은 # 표시로 구분해 보여줘요. 원본에서 한글 표가 잘리던 문제를 고쳤어요",
-    "category": "theme",
-    "kind": "patched",
-    "author": "hellosverre",
-    "license": "MIT",
-    "homepage": "https://github.com/SeongGwangJu/k-mods/tree/main/mods/skins",
-    "commands": [
-      "/skin"
-    ],
-    "requires": [],
-    "notes": [
-      "gfm-render와 함께 쓰면 표·코드·헤딩은 skins가, 경고문·체크리스트·Mermaid는 gfm-render가 한 답변 안에서 함께 그려요. 먼저 설치한 mod가 먼저 그리니 skins를 먼저 설치하세요(추천 세트는 이 순서로 설치해요).",
-      "헤딩 표시는 터미널에서만 바뀌어요. 끄려면 `/skin headings off`예요."
-    ],
-    "permissions": [
-      "도구 호출 제어",
-      "대화 읽기",
-      "환경·설정 읽기"
-    ],
-    "featured": true
-  },
-  {
     "name": "gfm-render",
     "displayName": "gfm-render",
     "summary": "대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요.",
@@ -137,6 +113,35 @@ export const CATALOG: CatalogEntry[] = [
     "permissions": [
       "프로그램 실행",
       "대화 읽기"
+    ],
+    "featured": true
+  },
+  {
+    "name": "skins",
+    "displayName": "skins",
+    "summary": "도구 호출·표·코드·셸 출력·Mermaid를 테마 카드로 그리고, 헤딩·경고문·체크리스트도 스킨 모양으로 보여줘요. 테마 15종을 /skin으로 바로 바꿔요",
+    "category": "theme",
+    "kind": "upstream",
+    "author": "hellosverre",
+    "license": "MIT",
+    "homepage": "https://github.com/hellosverre/claude-skins",
+    "commands": [
+      "/skin"
+    ],
+    "requires": [],
+    "notes": [
+      "도구 호출 줄은 접혀 있어요. `▸`를 누르면 입력과 결과(셸 출력 포함)가 펼쳐지고, 실패한 호출은 저절로 펼쳐져요.",
+      "Mermaid를 그릴 수 있다는 짧은 안내(약 130토큰)를 Claude에게 넣어요. `claude -p`에는 넣지 않아요. 끄려면 `/skin hints off`예요(그리기는 그대로예요).",
+      "원본의 새 버전 알림은 원본 마켓플레이스(`skins@hellosverre-mods`) 기준이에요. k-mods로 설치했다면 k-mods가 검토한 뒤 올리는 `skins@k-mods` 업데이트를 기다려 주세요.",
+      "표가 터미널 폭을 거의 채우면 짧은 열이 `…`로 잘리고, Mermaid 상자 안의 한글 라벨은 테두리가 어긋나요(원본 문제)."
+    ],
+    "permissions": [
+      "네트워크",
+      "프로그램 실행",
+      "도구 호출 제어",
+      "대화 읽기",
+      "환경·설정 읽기",
+      "파일 읽기"
     ],
     "featured": true
   },
@@ -1556,6 +1561,7 @@ export const CATALOG: CatalogEntry[] = [
     "requires": [],
     "notes": [],
     "permissions": [
+      "네트워크",
       "프로그램 실행",
       "파일 쓰기",
       "도구 호출 제어",

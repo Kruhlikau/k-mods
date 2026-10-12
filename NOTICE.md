@@ -5,7 +5,6 @@ k-mods의 카탈로그·스크립트·문서·오리지널 mod는 MIT 라이선�
 
 | 폴더 | 원본 | 라이선스 | 저작권 |
 | --- | --- | --- | --- |
-| `mods/skins` | [hellosverre/claude-skins](https://github.com/hellosverre/claude-skins) @ `2ee5b6a` | MIT | Copyright (c) hellosverre |
 | `mods/spinner` | [hoobnn/hoobnn-agent-mods](https://github.com/hoobnn/hoobnn-agent-mods/tree/8fb6f67cad9fd023cc7c06b7923518b4bbc45aea/claude-code/spinner) `claude-code/spinner` @ `8fb6f67` | MIT | Copyright (c) 2026 hoobnn |
 | `mods/blast-radius-ko` | [anthropics/claude-code-playground](https://github.com/anthropics/claude-code-playground/tree/main/claude-code/mods/blast-radius) `claude-code/mods/blast-radius` | Apache-2.0 | Copyright 2026 Anthropic PBC |
 

@@ -32,24 +32,6 @@
       "repository": "https://github.com/moduvoice/claude-code-ko-ui"
     },
     {
-      "name": "skins",
-      "source": "./mods/skins",
-      "description": "도구 호출·표·코드·셸 출력을 테마 카드로, 헤딩은 # 표시로 구분해 보여줘요. 원본에서 한글 표가 잘리던 문제를 고쳤어요",
-      "category": "테마",
-      "tags": [
-        "테마",
-        "스킨",
-        "카드"
-      ],
-      "author": {
-        "name": "hellosverre",
-        "url": "https://github.com/hellosverre"
-      },
-      "homepage": "https://github.com/SeongGwangJu/k-mods/tree/main/mods/skins",
-      "license": "MIT",
-      "repository": "https://github.com/hellosverre/claude-skins"
-    },
-    {
       "name": "gfm-render",
       "source": {
         "source": "github",
@@ -70,6 +52,28 @@
       "homepage": "https://github.com/briangtn/claude-gfm-render",
       "license": "MIT",
       "repository": "https://github.com/briangtn/claude-gfm-render"
+    },
+    {
+      "name": "skins",
+      "source": {
+        "source": "github",
+        "repo": "hellosverre/claude-skins",
+        "sha": "079b2d19d7faa767ec379a15015864de2ae53af9"
+      },
+      "description": "도구 호출·표·코드·셸 출력·Mermaid를 테마 카드로 그리고, 헤딩·경고문·체크리스트도 스킨 모양으로 보여줘요. 테마 15종을 /skin으로 바로 바꿔요",
+      "category": "테마",
+      "tags": [
+        "테마",
+        "스킨",
+        "카드"
+      ],
+      "author": {
+        "name": "hellosverre",
+        "url": "https://github.com/hellosverre"
+      },
+      "homepage": "https://github.com/hellosverre/claude-skins",
+      "license": "MIT",
+      "repository": "https://github.com/hellosverre/claude-skins"
     },
     {
       "name": "prismantis",

@@ -1,6 +1,10 @@
 {
   "name": "skins",
-  "source": "./mods/skins",
+  "source": {
+    "source": "github",
+    "repo": "hellosverre/claude-skins",
+    "sha": "079b2d19d7faa767ec379a15015864de2ae53af9"
+  },
   "auditedWith": "2.1.291",
   "validate": {
     "success": true,
@@ -11,16 +15,21 @@
     "classic.SessionStart{source=clear|resume|fork}",
     "command.run{command=skin}",
     "config.set",
+    "engine.create",
+    "prompt.compose",
     "session.append",
     "session.measure",
     "session.start",
+    "skins.markdown",
     "tool.call",
     "tool.call{tool=/\"^mcp__skins__design$\"/}",
     "turn.complete",
     "turn.start",
+    "ui.invalidate",
     "ui.render{component=AbovePrompt}",
     "ui.render{component=AskUserQuestion}",
     "ui.render{component=AssistantMessage}",
+    "ui.render{component=CommandOutput}",
     "ui.render{component=Pane, requestId=skins-gallery}",
     "ui.render{component=Pane, requestId=skins-settings}",
     "ui.render{component=Spinner}",
@@ -34,42 +43,68 @@
     "$.clock.after",
     "$.clock.every",
     "$.clock.now",
+    "$.clock.sleep",
     "$.command.register",
     "$.command.run",
     "$.config.list",
+    "$.env.get",
+    "$.fs.read",
+    "$.http.fetch",
+    "$.process.run",
     "$.session.cwd",
+    "$.session.id",
     "$.session.usage",
-    "$.settings.read",
     "$.state.get",
     "$.state.set",
     "$.store.get",
     "$.store.set",
     "$.tool.register",
     "$.ui.copy",
+    "$.ui.log",
     "$.ui.open",
     "$.ui.resolve",
     "$.ui.toast"
   ],
-  "envReads": [],
-  "envWrites": [],
+  "envReads": [
+    "CI",
+    "COLORFGBG",
+    "FORCE_HYPERLINK",
+    "KONSOLE_VERSION",
+    "SKINS_THEME",
+    "TERM",
+    "TERM_PROGRAM",
+    "TERM_PROGRAM_VERSION",
+    "TMUX",
+    "VTE_VERSION",
+    "WT_SESSION"
+  ],
+  "envWrites": [
+    "nothing"
+  ],
   "gatingWithoutCatch": [
     "classic.SessionStart{source=clear|resume|fork}",
     "config.set",
     "session.append",
+    "skins.markdown",
     "tool.call",
-    "tool.call{tool=/\"^mcp__skins__design$\"/}"
+    "tool.call{tool=/\"^mcp__skins__design$\"/}",
+    "ui.invalidate"
   ],
   "commands": [
     "/skin"
   ],
   "programs": [],
   "urls": [
-    "http://www.w3.org/2000/svg"
+    "http://www.w3.org/2000/svg",
+    "https://raw.githubusercontent.com/hellosverre/claude-skins/main/.claude-plugin/plugin.json"
   ],
   "license": "LICENSE",
   "permissions": [
+    "network",
+    "process",
     "gate",
     "chat",
-    "env"
+    "env",
+    "fs-read"
   ]
 }

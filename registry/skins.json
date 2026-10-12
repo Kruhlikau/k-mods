@@ -1,15 +1,19 @@
 {
   "$schema": "./_schema.json",
   "name": "skins",
-  "summary": "도구 호출·표·코드·셸 출력을 테마 카드로, 헤딩은 # 표시로 구분해 보여줘요. 원본에서 한글 표가 잘리던 문제를 고쳤어요",
-  "summaryEn": "Themed cards for tool rows, tables, code and shell output, and headings marked by their #s in the terminal; fixes CJK table widths and missing shell output",
+  "summary": "도구 호출·표·코드·셸 출력·Mermaid를 테마 카드로 그리고, 헤딩·경고문·체크리스트도 스킨 모양으로 보여줘요. 테마 15종을 /skin으로 바로 바꿔요",
+  "summaryEn": "Themed cards for tool rows, tables, code, shell output and Mermaid, with headings, alerts and task lists in the skin; fifteen skins you swap live with /skin",
   "notes": [
-    "gfm-render와 함께 쓰면 표·코드·헤딩은 skins가, 경고문·체크리스트·Mermaid는 gfm-render가 한 답변 안에서 함께 그려요. 먼저 설치한 mod가 먼저 그리니 skins를 먼저 설치하세요(추천 세트는 이 순서로 설치해요).",
-    "헤딩 표시는 터미널에서만 바뀌어요. 끄려면 `/skin headings off`예요."
+    "도구 호출 줄은 접혀 있어요. `▸`를 누르면 입력과 결과(셸 출력 포함)가 펼쳐지고, 실패한 호출은 저절로 펼쳐져요.",
+    "Mermaid를 그릴 수 있다는 짧은 안내(약 130토큰)를 Claude에게 넣어요. `claude -p`에는 넣지 않아요. 끄려면 `/skin hints off`예요(그리기는 그대로예요).",
+    "원본의 새 버전 알림은 원본 마켓플레이스(`skins@hellosverre-mods`) 기준이에요. k-mods로 설치했다면 k-mods가 검토한 뒤 올리는 `skins@k-mods` 업데이트를 기다려 주세요.",
+    "표가 터미널 폭을 거의 채우면 짧은 열이 `…`로 잘리고, Mermaid 상자 안의 한글 라벨은 테두리가 어긋나요(원본 문제)."
   ],
   "notesEn": [
-    "With gfm-render, skins draws tables, code and headings while gfm-render draws alerts, task lists and Mermaid in the same reply. The mod installed first draws first, so install skins first (the starter set does).",
-    "Headings change in the terminal only. Turn them off with `/skin headings off`."
+    "Tool rows start folded. `▸` opens the call's input and result, shell output included; a failed call opens by itself.",
+    "Adds a short note (about 130 tokens) telling Claude that Mermaid draws here; not for `claude -p`. Turn it off with `/skin hints off`; drawing stays on.",
+    "The new-release notice points at the original marketplace (`skins@hellosverre-mods`). If you installed from k-mods, wait for the reviewed `skins@k-mods` update.",
+    "Short columns in a table that nearly fills the terminal are cut with `…`, and Hangul labels inside Mermaid boxes push the border out (upstream issues)."
   ],
   "category": "theme",
   "tags": [
@@ -17,18 +21,23 @@
     "스킨",
     "카드"
   ],
-  "kind": "patched",
-  "source": "./mods/skins",
+  "kind": "upstream",
+  "source": {
+    "source": "github",
+    "repo": "hellosverre/claude-skins",
+    "sha": "079b2d19d7faa767ec379a15015864de2ae53af9"
+  },
   "upstream": {
     "repo": "hellosverre/claude-skins",
-    "commit": "2ee5b6a3e7e765a2aa107631a9d07105753e8bd5",
-    "stars": 8
+    "commit": "079b2d19d7faa767ec379a15015864de2ae53af9",
+    "stars": 108
   },
   "author": {
     "name": "hellosverre",
     "url": "https://github.com/hellosverre"
   },
   "license": "MIT",
+  "homepage": "https://github.com/hellosverre/claude-skins",
   "commands": [
     "/skin"
   ],
@@ -39,14 +48,22 @@
   "featured": true,
   "preview": "docs/assets/mods/skins.png",
   "review": {
-    "date": "2026-10-06",
+    "date": "2026-10-12",
     "by": "k-mods",
-    "claudeCode": "2.1.291",
+    "claudeCode": "2.1.296",
     "method": [
       "validate",
       "code-read",
       "unit-test",
       "live-session"
+    ],
+    "findings": [
+      "validate 통과, 원본 테스트 204개 통과(2.1.296). 원본 CI가 Linux·Windows·macOS에서 테스트·validate·타입 검사를 돌려요.",
+      "네트워크: 하루 한 번 원본 저장소의 plugin.json을 raw.githubusercontent.com에서 GET으로 받아 새 버전을 확인해요. 보내는 데이터 없음.",
+      "외부 프로세스: 테마가 auto일 때 OS의 밝기 모드를 읽으려고 macOS `defaults read -g AppleInterfaceStyle`, GNOME `gsettings get`만 실행해요.",
+      "파일: 자기 plugin.json만 읽고, 설정은 mod 저장소($.store)에만 써요. 모델 호출 없음.",
+      "차단형 훅 tool.call은 셸 명령·소요 시간을 기록하고 next(e) 결과를 그대로 돌려주며, 자기 디자인 도구(mcp__skins__design) 호출만 직접 처리해요. 다른 도구를 막지 않아요.",
+      "Mermaid 안내문(약 130토큰)을 prompt.compose로 더해요. `claude -p` 같은 화면 없는 실행에는 넣지 않아요."
     ]
   }
 }

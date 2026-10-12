@@ -51,8 +51,8 @@ Descriptions in `/plugin` are in Korean; this page and each mod's source link ar
 
 | mod | What it does | Source |
 | --- | --- | --- |
-| [**skins**](docs/mods/skins.md) ⭐ | Themed cards for tool rows, tables, code and shell output, and headings marked by their #s in the terminal; fixes CJK table widths and missing shell output | 🔧 [hellosverre](https://github.com/hellosverre) · patched |
 | [**gfm-render**](docs/mods/gfm-render.md) ⭐ | Renders GitHub Flavored Markdown alerts, task lists, strikethrough and Mermaid diagrams in the Claude Code transcript. | [briangtn](https://github.com/briangtn) |
+| [**skins**](docs/mods/skins.md) ⭐ | Themed cards for tool rows, tables, code, shell output and Mermaid, with headings, alerts and task lists in the skin; fifteen skins you swap live with /skin | [hellosverre](https://github.com/hellosverre) |
 | [**prismantis**](docs/mods/prismantis.md) | Colorful, themeable rendering for Claude Code replies across 15 themes: tables, code, diagrams, charts and tool rows, with copy buttons. | [Nahum Litvin](https://github.com/NahumLitvin) |
 
 ### 🐾 Animation & fun
