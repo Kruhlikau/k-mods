@@ -20,7 +20,7 @@ export type CatalogEntry = {
 }
 
 export const MARKETPLACE = 'k-mods'
-export const CATALOG_VERSION = '0.5.0'
+export const CATALOG_VERSION = '0.6.0'
 
 // 상점 자신은 목록에서 숨긴다
 export const SELF_NAME = 'mod-store'
@@ -95,28 +95,6 @@ export const CATALOG: CatalogEntry[] = [
     "featured": true
   },
   {
-    "name": "gfm-render",
-    "displayName": "gfm-render",
-    "summary": "대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요.",
-    "category": "theme",
-    "kind": "upstream",
-    "author": "briangtn",
-    "license": "MIT",
-    "homepage": "https://github.com/briangtn/claude-gfm-render",
-    "commands": [],
-    "requires": [],
-    "notes": [
-      "세션을 시작할 때마다 Claude에게 경고문·체크리스트·Mermaid를 쓸 수 있다는 짧은 안내문(약 250토큰)을 넣어요. 도움이 될 때만, 사용자의 서식 지시를 먼저 따르라고 적혀 있어요. `claude -p` 같은 스크립트 실행에도 들어가요. 끄려면 `/plugin configure gfm-render@k-mods`에서 `promptHint`를 끄세요(그리기는 그대로예요).",
-      "skins와 함께 쓰면 skins를 먼저 설치하세요. 먼저 설치한 mod가 먼저 그리는데, gfm-render가 먼저면 경고문·Mermaid가 있는 답변에서 skins의 표·헤딩 모양이 빠져요.",
-      "Mermaid 상자 안의 한글 라벨은 글자 폭을 1칸으로 세서 테두리가 어긋나요(원본 문제). 라벨은 영어로 짧게 쓰면 깔끔해요."
-    ],
-    "permissions": [
-      "프로그램 실행",
-      "대화 읽기"
-    ],
-    "featured": true
-  },
-  {
     "name": "skins",
     "displayName": "skins",
     "summary": "도구 호출·표·코드·셸 출력·Mermaid를 테마 카드로 그리고, 헤딩·경고문·체크리스트도 스킨 모양으로 보여줘요. 테마 15종을 /skin으로 바로 바꿔요",
@@ -144,6 +122,26 @@ export const CATALOG: CatalogEntry[] = [
       "파일 읽기"
     ],
     "featured": true
+  },
+  {
+    "name": "gfm-render",
+    "displayName": "gfm-render",
+    "summary": "대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요.",
+    "category": "theme",
+    "kind": "upstream",
+    "author": "briangtn",
+    "license": "MIT",
+    "homepage": "https://github.com/briangtn/claude-gfm-render",
+    "commands": [],
+    "requires": [],
+    "notes": [
+      "세션을 시작할 때마다 Claude에게 경고문·체크리스트·Mermaid를 쓸 수 있다는 짧은 안내문(약 250토큰)을 넣어요. 도움이 될 때만, 사용자의 서식 지시를 먼저 따르라고 적혀 있어요. `claude -p` 같은 스크립트 실행에도 들어가요. 끄려면 `/plugin configure gfm-render@k-mods`에서 `promptHint`를 끄세요(그리기는 그대로예요).",
+      "Mermaid 상자 안의 한글 라벨은 글자 폭을 1칸으로 세서 테두리가 어긋나요(원본 문제). 라벨은 영어로 짧게 쓰면 깔끔해요."
+    ],
+    "permissions": [
+      "프로그램 실행",
+      "대화 읽기"
+    ]
   },
   {
     "name": "prismantis",
@@ -1551,7 +1549,7 @@ export const CATALOG: CatalogEntry[] = [
   {
     "name": "starter",
     "displayName": "추천 세트",
-    "summary": "처음 설치하기 좋은 추천 세트예요. ko-ui, skins, gfm-render, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요",
+    "summary": "처음 설치하기 좋은 추천 세트예요. ko-ui, skins, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요",
     "category": "bundle",
     "kind": "bundle",
     "author": "SeongGwangJu",
@@ -1572,7 +1570,6 @@ export const CATALOG: CatalogEntry[] = [
     "dependencies": [
       "ko-ui",
       "skins",
-      "gfm-render",
       "pixel-pals",
       "ctx-strip",
       "mod-store"

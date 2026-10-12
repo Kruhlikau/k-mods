@@ -54,7 +54,6 @@ Claude Code 안에서 실행되는 플러그인 코드예요. 도구 호출, 프
 | mod | 무엇을 해 주나요 |
 | --- | --- |
 | [**ko-ui**](docs/mods/ko-ui.md)<br>`/plugin install ko-ui@k-mods`<br><img src="docs/assets/mods/ko-ui.png" alt="ko-ui" width="420"> | 슬래시 커맨드 설명, `/config` 항목, 작업 표시줄 같은 화면 문구를 번역 사전에 맞춰 한국어로 표시해요. |
-| [**gfm-render**](docs/mods/gfm-render.md)<br>`/plugin install gfm-render@k-mods`<br><img src="docs/assets/mods/gfm-render.png" alt="gfm-render" width="420"> | 대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요. |
 | [**skins**](docs/mods/skins.md)<br>`/plugin install skins@k-mods`<br><img src="docs/assets/mods/skins.png" alt="skins" width="420"> | 도구 호출·표·코드·셸 출력·Mermaid를 테마 카드로 그리고, 헤딩·경고문·체크리스트도 스킨 모양으로 보여줘요. 테마 15종을 /skin으로 바로 바꿔요 |
 | [**pixel-pals**](docs/mods/pixel-pals.md)<br>`/plugin install pixel-pals@k-mods`<br><img src="docs/assets/mods/pixel-pals.gif" alt="pixel-pals" width="420"> | Claude가 일하는 동안 입력창 위에 냥캣·Clawd·썬더 같은 픽셀 친구들이 지나가요. 엄선한 장면 6종에 clawd-tales의 Clawd 이야기를 합친 한국어판이에요 |
 | [**컨텍스트 막대**](docs/mods/ctx-strip.md)<br>`/plugin install ctx-strip@k-mods`<br><img src="docs/assets/mods/ctx-strip.png" alt="컨텍스트 막대" width="420"> | 컨텍스트 구성(대화·도구·스킬…)을 입력창 위 막대로 표시해요. 서브에이전트가 실행되면 한 줄로 알려줘요 |
@@ -78,8 +77,8 @@ Claude Code 안에서 실행되는 플러그인 코드예요. 도구 호출, 프
 
 | mod | 무엇을 해 주나요 | 출처 |
 | --- | --- | --- |
-| [**gfm-render**](docs/mods/gfm-render.md) ⭐ | 대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요. | [briangtn](https://github.com/briangtn) |
 | [**skins**](docs/mods/skins.md) ⭐ | 도구 호출·표·코드·셸 출력·Mermaid를 테마 카드로 그리고, 헤딩·경고문·체크리스트도 스킨 모양으로 보여줘요. 테마 15종을 /skin으로 바로 바꿔요 | [hellosverre](https://github.com/hellosverre) |
+| [**gfm-render**](docs/mods/gfm-render.md) | 대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요. | [briangtn](https://github.com/briangtn) |
 | [**prismantis**](docs/mods/prismantis.md) | 표·코드·다이어그램·도구 호출 결과를 15가지 테마로 표시하고 복사 버튼을 추가해요. | [Nahum Litvin](https://github.com/NahumLitvin) |
 
 ### 🐾 애니메이션
@@ -191,7 +190,7 @@ GitHub·Linear 같은 외부 서비스의 상태와 작업을 Claude Code에 표
 | mod | 무엇을 해 주나요 | 출처 |
 | --- | --- | --- |
 | [**한국어 팩**](docs/mods/korean-pack.md)<br>`korean-pack` | 메뉴·설정·작업 표시줄 번역(ko-ui)을 설치해 Claude Code 화면을 한국어로 바꿔요 | 📦 묶음 |
-| [**추천 세트**](docs/mods/starter.md)<br>`starter` | 처음 설치하기 좋은 추천 세트예요. ko-ui, skins, gfm-render, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요 | 📦 묶음 |
+| [**추천 세트**](docs/mods/starter.md)<br>`starter` | 처음 설치하기 좋은 추천 세트예요. ko-ui, skins, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요 | 📦 묶음 |
 | [**택시팩**](docs/mods/taxi-pack.md)<br>`taxi-pack` | 미터기(요금·한도), 내비(할 일 진행 상황), 과속카메라(위험 명령 확인), 블랙박스(도구 호출 기록)를 한 번에 설치해요 | 📦 묶음 |
 <!-- END:catalog -->
 

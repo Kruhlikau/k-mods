@@ -5,7 +5,7 @@
     "url": "https://github.com/SeongGwangJu"
   },
   "description": "한국어로 고르고 한 줄로 설치하는 Claude Code mods 모음. 검토한 커밋만 설치돼요.",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "plugins": [
     {
       "name": "ko-ui",
@@ -32,28 +32,6 @@
       "repository": "https://github.com/moduvoice/claude-code-ko-ui"
     },
     {
-      "name": "gfm-render",
-      "source": {
-        "source": "github",
-        "repo": "briangtn/claude-gfm-render",
-        "sha": "a209ad5a0ec35c0813d2d80ab62b596140b0c807"
-      },
-      "description": "대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요.",
-      "category": "테마",
-      "tags": [
-        "마크다운",
-        "Mermaid",
-        "렌더러"
-      ],
-      "author": {
-        "name": "briangtn",
-        "url": "https://github.com/briangtn"
-      },
-      "homepage": "https://github.com/briangtn/claude-gfm-render",
-      "license": "MIT",
-      "repository": "https://github.com/briangtn/claude-gfm-render"
-    },
-    {
       "name": "skins",
       "source": {
         "source": "github",
@@ -74,6 +52,28 @@
       "homepage": "https://github.com/hellosverre/claude-skins",
       "license": "MIT",
       "repository": "https://github.com/hellosverre/claude-skins"
+    },
+    {
+      "name": "gfm-render",
+      "source": {
+        "source": "github",
+        "repo": "briangtn/claude-gfm-render",
+        "sha": "a209ad5a0ec35c0813d2d80ab62b596140b0c807"
+      },
+      "description": "대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요.",
+      "category": "테마",
+      "tags": [
+        "마크다운",
+        "Mermaid",
+        "렌더러"
+      ],
+      "author": {
+        "name": "briangtn",
+        "url": "https://github.com/briangtn"
+      },
+      "homepage": "https://github.com/briangtn/claude-gfm-render",
+      "license": "MIT",
+      "repository": "https://github.com/briangtn/claude-gfm-render"
     },
     {
       "name": "prismantis",
@@ -1463,7 +1463,7 @@
       "name": "starter",
       "source": "./bundles/starter",
       "displayName": "추천 세트",
-      "description": "처음 설치하기 좋은 추천 세트예요. ko-ui, skins, gfm-render, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요",
+      "description": "처음 설치하기 좋은 추천 세트예요. ko-ui, skins, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요",
       "category": "묶음",
       "tags": [
         "추천",
@@ -1479,7 +1479,6 @@
       "dependencies": [
         "ko-ui",
         "skins",
-        "gfm-render",
         "pixel-pals",
         "ctx-strip",
         "mod-store"

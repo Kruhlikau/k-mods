@@ -1,6 +1,6 @@
 # 추천 세트
 
-> 처음 설치하기 좋은 추천 세트예요. ko-ui, skins, gfm-render, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요
+> 처음 설치하기 좋은 추천 세트예요. ko-ui, skins, pixel-pals, ctx-strip, mod-store를 한 번에 설치해요
 
 | | |
 | --- | --- |
@@ -35,7 +35,6 @@ claude plugin install starter@k-mods
 
 - [ko-ui](ko-ui.md): 슬래시 커맨드 설명, `/config` 항목, 작업 표시줄 같은 화면 문구를 번역 사전에 맞춰 한국어로 표시해요.
 - [skins](skins.md): 도구 호출·표·코드·셸 출력·Mermaid를 테마 카드로 그리고, 헤딩·경고문·체크리스트도 스킨 모양으로 보여줘요. 테마 15종을 /skin으로 바로 바꿔요
-- [gfm-render](gfm-render.md): 대화 기록에 있는 GFM 경고문·체크리스트·취소선·Mermaid 다이어그램을 화면에 표시해요.
 - [pixel-pals](pixel-pals.md): Claude가 일하는 동안 입력창 위에 냥캣·Clawd·썬더 같은 픽셀 친구들이 지나가요. 엄선한 장면 6종에 clawd-tales의 Clawd 이야기를 합친 한국어판이에요
 - [컨텍스트 막대](ctx-strip.md) `ctx-strip`: 컨텍스트 구성(대화·도구·스킬…)을 입력창 위 막대로 표시해요. 서브에이전트가 실행되면 한 줄로 알려줘요
 - [모드 상점](mod-store.md) `mod-store`: `/k-mods`를 입력하면 카탈로그가 열려요. 버튼으로 mod를 설치하거나 제거할 수 있어요
@@ -54,7 +53,7 @@ claude plugin install starter@k-mods
 
 ## 검토 기록
 
-- 2026-10-08 · k-mods · Claude Code 2.1.294 · 정적 검사
+- 2026-10-12 · k-mods · Claude Code 2.1.296 · 정적 검사, 실제 세션 확인
 
 ## 더 보기
 
