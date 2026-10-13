@@ -10,7 +10,7 @@
 | 종류 | 원본 (검토한 커밋 고정) |
 | 만든 사람 | [hellosverre](https://github.com/hellosverre) |
 | 라이선스 | MIT |
-| 원본 | [hellosverre/claude-skins @ `079b2d1`](https://github.com/hellosverre/claude-skins/tree/079b2d19d7faa767ec379a15015864de2ae53af9) |
+| 원본 | [hellosverre/claude-skins @ `1953c83`](https://github.com/hellosverre/claude-skins/tree/1953c83947472b06c002bc1e29b1638214f81edc) |
 | 유형 | 🎨 테마 |
 | 보이는 곳 | 터미널 · 데스크톱 앱 |
 | 명령어 | `/skin` |
@@ -39,7 +39,7 @@ claude plugin install skins@k-mods
 - 도구 호출 줄은 접혀 있어요. `▸`를 누르면 입력과 결과(셸 출력 포함)가 펼쳐지고, 실패한 호출은 저절로 펼쳐져요.
 - Mermaid를 그릴 수 있다는 짧은 안내(약 130토큰)를 Claude에게 넣어요. `claude -p`에는 넣지 않아요. 끄려면 `/skin hints off`예요(그리기는 그대로예요).
 - 원본의 새 버전 알림은 원본 마켓플레이스(`skins@hellosverre-mods`) 기준이에요. k-mods로 설치했다면 k-mods가 검토한 뒤 올리는 `skins@k-mods` 업데이트를 기다려 주세요.
-- 표가 터미널 폭을 거의 채우면 짧은 열이 `…`로 잘리고, Mermaid 상자 안의 한글 라벨은 테두리가 어긋나요(원본 문제).
+- Mermaid에서 상자 id를 한글로 쓰면 그 그림은 코드로 보여요. `A[요청] --> B[처리]`처럼 id는 영문, 라벨만 한글로 쓰면 그려져요(원본 문제).
 
 ## 이 mod가 내 컴퓨터에서 하는 일
 
@@ -52,7 +52,7 @@ claude plugin install skins@k-mods
 
 <details><summary>정적 분석 결과 (<code>claude plugin validate</code>)</summary>
 
-- 검사한 Claude Code: 2.1.291
+- 검사한 Claude Code: 2.1.296
 - 결과: 통과
 - 다루는 이벤트: `classic.SessionStart{source=clear|resume|fork}`, `command.run{command=skin}`, `config.set`, `engine.create`, `prompt.compose`, `session.append`, `session.measure`, `session.start`, `skins.markdown`, `tool.call`, `tool.call{tool=/"^mcp__skins__design$"/}`, `turn.complete`, `turn.start`, `ui.invalidate`, `ui.render{component=AbovePrompt}`, `ui.render{component=AskUserQuestion}`, `ui.render{component=AssistantMessage}`, `ui.render{component=CommandOutput}`, `ui.render{component=Pane, requestId=skins-gallery}`, `ui.render{component=Pane, requestId=skins-settings}`, `ui.render{component=Spinner}`, `ui.render{component=ToolGroup}`, `ui.render{component=ToolResult}`, `ui.render{component=ToolUse}`, `ui.render{component=TurnDuration}`, `ui.render{component=UserMessage}`
 - 부르는 API: `$.clock.after`, `$.clock.every`, `$.clock.now`, `$.clock.sleep`, `$.command.register`, `$.command.run`, `$.config.list`, `$.env.get`, `$.fs.read`, `$.http.fetch`, `$.process.run`, `$.session.cwd`, `$.session.id`, `$.session.usage`, `$.state.get`, `$.state.set`, `$.store.get`, `$.store.set`, `$.tool.register`, `$.ui.copy`, `$.ui.log`, `$.ui.open`, `$.ui.resolve`, `$.ui.toast`
@@ -62,12 +62,12 @@ claude plugin install skins@k-mods
 
 ## 검토 기록
 
-- 2026-10-12 · k-mods · Claude Code 2.1.296 · 정적 검사, 코드 읽기, 테스트, 실제 세션 확인
+- 2026-10-13 · k-mods · Claude Code 2.1.296 · 정적 검사, 코드 읽기, 테스트, 실제 세션 확인
 - 이 항목은 위 커밋에 고정돼 있어요. 원본이 바뀌면 다시 검토한 뒤에 올려요.
 
 <details><summary>검토 노트 6개 (코드를 읽으며 확인한 것)</summary>
 
-- validate 통과, 원본 테스트 204개 통과(2.1.296). 원본 CI가 Linux·Windows·macOS에서 테스트·validate·타입 검사를 돌려요.
+- validate 통과, 원본 테스트 213개 통과(2.1.296). 원본 CI가 Linux·Windows·macOS에서 테스트·validate·타입 검사를 돌려요.
 - 네트워크: 하루 한 번 원본 저장소의 plugin.json을 raw.githubusercontent.com에서 GET으로 받아 새 버전을 확인해요. 보내는 데이터 없음.
 - 외부 프로세스: 테마가 auto일 때 OS의 밝기 모드를 읽으려고 macOS `defaults read -g AppleInterfaceStyle`, GNOME `gsettings get`만 실행해요.
 - 파일: 자기 plugin.json만 읽고, 설정은 mod 저장소($.store)에만 써요. 모델 호출 없음.
@@ -78,5 +78,5 @@ claude plugin install skins@k-mods
 
 ## 더 보기
 
-- [원본 저장소](https://github.com/hellosverre/claude-skins/tree/079b2d19d7faa767ec379a15015864de2ae53af9)
+- [원본 저장소](https://github.com/hellosverre/claude-skins/tree/1953c83947472b06c002bc1e29b1638214f81edc)
 - [카탈로그로 돌아가기](../../README.md#mod-목록)

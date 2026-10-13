@@ -3,9 +3,9 @@
   "source": {
     "source": "github",
     "repo": "hellosverre/claude-skins",
-    "sha": "079b2d19d7faa767ec379a15015864de2ae53af9"
+    "sha": "1953c83947472b06c002bc1e29b1638214f81edc"
   },
-  "auditedWith": "2.1.291",
+  "auditedWith": "2.1.296",
   "validate": {
     "success": true,
     "errors": [],
