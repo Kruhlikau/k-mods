@@ -139,6 +139,7 @@ Claude가 일하는 동안 애니메이션이나 게임을 표시해요
 | [**prompt-rail**](docs/mods/prompt-rail.md) | 세션에서 보낸 프롬프트를 탐색 막대에 모아 표시해요. 마우스를 올리면 내용을 미리 보고 클릭하면 해당 지점으로 이동해요. | [oikon48](https://github.com/oikon48) |
 | [**replay-theater**](docs/mods/replay-theater.md) | 이번 턴에서 Claude가 고친 파일을 한 단계씩 diff로 다시 확인할 수 있어요. | [Claude Code DevRel](https://github.com/anthropics) |
 | [**session-wrapped**](docs/mods/session-wrapped.md) | `/wrapped`로 이번 세션의 도구 호출·테스트·비용 통계를 애니메이션으로 표시해요. 공유용 PNG 카드는 데스크톱에 저장해요. | [OneWave AI](https://www.onewave-ai.com) |
+| [**subagent-tuner**](docs/mods/subagent-tuner.md) | 서브에이전트가 시작될 때 쓸 모델과 추론 강도를 직접 고르거나, 작업 종류별 추천과 저장한 기본값으로 정해요. | [Aleh Kruhlikau](https://github.com/Kruhlikau) |
 | [**taxi-blackbox**](docs/mods/taxi-blackbox.md) | 도구 호출을 기록하고 오류나 거부 직전의 기록을 /blackbox에서 다시 확인할 수 있어요. 토큰·비밀번호는 가려서 기록해요. | [개발동생 (devbrothers)](https://github.com/devbrother2024) |
 | [**taxi-navi**](docs/mods/taxi-navi.md) | 할 일 목록에서 현재 진행 상태와 다음 할 일을 표시해요. 계획이 바뀌면 새 순서에 맞춰 목록을 갱신해요. | [개발동생 (devbrothers)](https://github.com/devbrother2024) |
 

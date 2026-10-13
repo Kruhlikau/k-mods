@@ -1031,6 +1031,27 @@ export const CATALOG: CatalogEntry[] = [
     ]
   },
   {
+    "name": "subagent-tuner",
+    "displayName": "subagent-tuner",
+    "summary": "서브에이전트가 시작될 때 쓸 모델과 추론 강도를 직접 고르거나, 작업 종류별 추천과 저장한 기본값으로 정해요.",
+    "category": "tool",
+    "kind": "upstream",
+    "author": "Aleh Kruhlikau",
+    "license": "MIT",
+    "homepage": "https://github.com/Kruhlikau/subagent-tuner",
+    "commands": [],
+    "requires": [],
+    "notes": [
+      "`claude -p`와 SDK 실행, 포크는 건드리지 않아요.",
+      "입력창 위 띠에서 Manual(묻기)과 Auto(저장한 기본값 우선)를 바꿔요. 터미널이 144칸 이상이면 옆 패널로, 좁으면 대화상자로 물어봐요."
+    ],
+    "permissions": [
+      "프로그램 실행",
+      "파일 쓰기",
+      "도구 호출 제어"
+    ]
+  },
+  {
     "name": "taxi-blackbox",
     "displayName": "taxi-blackbox",
     "summary": "도구 호출을 기록하고 오류나 거부 직전의 기록을 /blackbox에서 다시 확인할 수 있어요. 토큰·비밀번호는 가려서 기록해요.",

@@ -107,6 +107,7 @@ Descriptions in `/plugin` are in Korean; this page and each mod's source link ar
 | [**prompt-rail**](docs/mods/prompt-rail.md) | A rail of your session's prompts beside the transcript or above the prompt; hover to read one, click to jump to it. | [oikon48](https://github.com/oikon48) |
 | [**replay-theater**](docs/mods/replay-theater.md) | Step through the file edits Claude made in the last turn, one diff at a time, in a pane. | [Claude Code DevRel](https://github.com/anthropics) |
 | [**session-wrapped**](docs/mods/session-wrapped.md) | Spotify-Wrapped-style recap for a Claude Code session: run /wrapped for an animated stat reveal, saved as a shareable PNG on your Desktop. | [OneWave AI](https://www.onewave-ai.com) |
+| [**subagent-tuner**](docs/mods/subagent-tuner.md) | Chooses the model and reasoning effort of every subagent: ask before it starts, recommend by task kind, or apply a saved default over what the agent requested. | [Aleh Kruhlikau](https://github.com/Kruhlikau) |
 | [**taxi-blackbox**](docs/mods/taxi-blackbox.md) | Records tool calls like a car's black box; replay the moments before an error or denial with /blackbox. Tokens and passwords are masked. | [개발동생 (devbrothers)](https://github.com/devbrother2024) |
 | [**taxi-navi**](docs/mods/taxi-navi.md) | Shows your todo list like a car navigation: progress path, next-step guidance, 'recalculating' on plan changes, an arrival announcement. | [개발동생 (devbrothers)](https://github.com/devbrother2024) |
 
