@@ -1,0 +1,58 @@
+{
+  "$schema": "./_schema.json",
+  "name": "subagent-tuner",
+  "summary": "서브에이전트가 시작될 때 쓸 모델과 추론 강도를 직접 고르거나, 작업 종류별 추천과 저장한 기본값으로 정해요.",
+  "summaryEn": "Chooses the model and reasoning effort of every subagent: ask before it starts, recommend by task kind, or apply a saved default over what the agent requested.",
+  "category": "tool",
+  "tags": [
+    "서브에이전트",
+    "모델",
+    "effort",
+    "비용"
+  ],
+  "kind": "upstream",
+  "source": {
+    "source": "github",
+    "repo": "Kruhlikau/subagent-tuner",
+    "sha": "823747db2ab95027b986ba5cb28046ddf8063f7e"
+  },
+  "upstream": {
+    "repo": "Kruhlikau/subagent-tuner",
+    "commit": "823747db2ab95027b986ba5cb28046ddf8063f7e",
+    "stars": 0
+  },
+  "author": {
+    "name": "Aleh Kruhlikau",
+    "url": "https://github.com/Kruhlikau"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Kruhlikau/subagent-tuner",
+  "surfaces": [
+    "terminal"
+  ],
+  "notes": [
+    "`claude -p`와 SDK 실행, 포크는 건드리지 않아요.",
+    "입력창 위 띠에서 Manual(묻기)과 Auto(저장한 기본값 우선)를 바꿔요. 터미널이 144칸 이상이면 옆 패널로, 좁으면 대화상자로 물어봐요."
+  ],
+  "notesEn": [
+    "Runs started with `claude -p`, SDK hosts and forks are left untouched.",
+    "A band above the prompt switches between Manual (asks) and Auto (the saved default wins); the question is a pane beside the transcript on terminals 144 columns or wider, dialogs otherwise."
+  ],
+  "review": {
+    "date": "2026-10-13",
+    "by": "Kruhlikau",
+    "claudeCode": "2.1.296",
+    "method": [
+      "validate",
+      "code-read",
+      "unit-test"
+    ],
+    "findings": [
+      "validate --strict 통과, 테스트 196개 통과(claude plugin test). 만든 사람이 직접 검토했어요.",
+      "네트워크 호출과 모델 호출은 없어요.",
+      "외부 프로그램은 대기용 sh(macOS·Linux) 또는 powershell.exe(Windows)만 실행해요. 패널 대기와, 플러그인 폴더의 .waits/ 쓰기 확인 파일 삭제에만 써요.",
+      "파일 쓰기는 플러그인 폴더의 .waits/ 아래 빈 신호 파일과 확인용 .probe 파일뿐이고, 설정(모드·기본값)은 Claude Code의 플러그인 저장소에 저장해요.",
+      "tool.call{tool=Agent}를 가로채 model과 effort 필드만 바꾸고, 사용자가 취소하면 호출을 거절해요(deny). 대화 내용은 어디로도 보내지 않아요."
+    ]
+  }
+}
