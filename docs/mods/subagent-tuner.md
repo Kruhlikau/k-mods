@@ -8,7 +8,7 @@
 | 종류 | 원본 (검토한 커밋 고정) |
 | 만든 사람 | [Aleh Kruhlikau](https://github.com/Kruhlikau) |
 | 라이선스 | MIT |
-| 원본 | [Kruhlikau/subagent-tuner @ `943b24f`](https://github.com/Kruhlikau/subagent-tuner/tree/943b24f2c7bb210fc4f50687ef6f8c92a0f15417) |
+| 원본 | [Kruhlikau/subagent-tuner @ `03b2da3`](https://github.com/Kruhlikau/subagent-tuner/tree/03b2da3a87c403e5125c66a1c5754ff93deff456) |
 | 유형 | 🧰 도구 |
 | 보이는 곳 | 터미널 |
 | 명령어 | 없음 (설치하면 알아서 동작해요) |
@@ -73,5 +73,5 @@ claude plugin install subagent-tuner@k-mods
 
 ## 더 보기
 
-- [원본 저장소](https://github.com/Kruhlikau/subagent-tuner/tree/943b24f2c7bb210fc4f50687ef6f8c92a0f15417)
+- [원본 저장소](https://github.com/Kruhlikau/subagent-tuner/tree/03b2da3a87c403e5125c66a1c5754ff93deff456)
 - [카탈로그로 돌아가기](../../README.md#mod-목록)

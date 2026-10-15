@@ -14,11 +14,11 @@
   "source": {
     "source": "github",
     "repo": "Kruhlikau/subagent-tuner",
-    "sha": "943b24f2c7bb210fc4f50687ef6f8c92a0f15417"
+    "sha": "03b2da3a87c403e5125c66a1c5754ff93deff456"
   },
   "upstream": {
     "repo": "Kruhlikau/subagent-tuner",
-    "commit": "943b24f2c7bb210fc4f50687ef6f8c92a0f15417",
+    "commit": "03b2da3a87c403e5125c66a1c5754ff93deff456",
     "stars": 0
   },
   "author": {
