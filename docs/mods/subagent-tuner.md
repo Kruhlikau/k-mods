@@ -47,9 +47,9 @@ claude plugin install subagent-tuner@k-mods
 
 <details><summary>정적 분석 결과 (<code>claude plugin validate</code>)</summary>
 
-- 검사한 Claude Code: 2.1.300
+- 검사한 Claude Code: 2.1.291
 - 결과: 통과
-- 다루는 이벤트: `agent.offer`, `session.start`, `tool.call{tool=Agent}`, `ui.close`, `ui.render{component=AbovePrompt}`, `ui.render{component=Pane}`
+- 다루는 이벤트: `agent.offer`, `agent.spawn`, `session.start`, `tool.call{tool=Agent}`, `ui.close`, `ui.render{component=AbovePrompt}`, `ui.render{component=Pane}`
 - 부르는 API: `$.clock.now`, `$.clock.sleep`, `$.fs.write`, `$.process.run`, `$.session.surfaces`, `$.state.get`, `$.state.set`, `$.store.get`, `$.store.set`, `$.ui.ask`, `$.ui.close`, `$.ui.open`, `$.ui.panes`, `$.ui.resolve`, `$.ui.toast`
 
 </details>
