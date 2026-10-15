@@ -3,7 +3,7 @@
   "source": {
     "source": "github",
     "repo": "Kruhlikau/subagent-tuner",
-    "sha": "03b2da3a87c403e5125c66a1c5754ff93deff456"
+    "sha": "46bee016e183ca81ede82139fa01b17048ee721e"
   },
   "auditedWith": "2.1.300",
   "validate": {
@@ -13,6 +13,7 @@
   },
   "hooks": [
     "agent.offer",
+    "agent.spawn",
     "session.start",
     "tool.call{tool=Agent}",
     "ui.close",
